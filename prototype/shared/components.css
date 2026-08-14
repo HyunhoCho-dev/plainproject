@@ -738,6 +738,31 @@ button { font-family: inherit; }
 .social--naver  { background: #03C75A; border-color: #03C75A; color: #fff; }
 .social--google { background: var(--surface); }
 
+/* ══ toast — 즉시 반영 안내 ═══════════════════════════ */
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--tabbar-h) + var(--space-6));
+  transform: translate(-50%, 8px);
+  max-width: calc(100% - var(--space-10));
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--r-full);
+  background: var(--text);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 40;
+  pointer-events: none;
+}
+.toast[data-on="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+/* PC 화면은 폰 프레임이 없으므로 뷰포트 기준으로 띄운다 */
+.toast--page { position: fixed; bottom: var(--space-8); }
+
 /* ══ skeleton ═════════════════════════════════════════ */
 
 .skeleton {

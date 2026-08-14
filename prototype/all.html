@@ -1,0 +1,2747 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전체 화면 25개 — 집중 지원 앱</title>
+<style>
+/* 한글 웹폰트 Pretendard.
+   보는 사람 컴퓨터에 폰트가 없어도 똑같이 보이게 한다.
+   한글은 글자 수가 많아 필요한 글자만 내려받는 dynamic-subset 판을 쓴다. */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+/* DESIGN.md §2 §3 §5 §6 — 토큰 정의
+   이 파일 밖에서 색·간격·크기를 하드코딩하지 않는다. */
+
+:root {
+  /* 배경 · 표면 */
+  --bg:            #FBFBFA;
+  --surface:       #FFFFFF;
+  --surface-2:     #F4F4F2;
+
+  /* 텍스트 */
+  --text:          #1A1D23;
+  --text-2:        #4B5563;
+  --text-3:        #9AA1AC;
+
+  /* 선 */
+  --border:        #E8E8E6;
+  --border-strong: #D5D5D2;
+
+  /* 액센트 — 사용자 행동 */
+  --accent:        #3A6FF7;
+  --accent-weak:   #EBF1FE;
+
+  /* AI — AI가 만들거나 판단한 것 전용 */
+  --ai:            #7C5CE0;
+  --ai-weak:       #F2EDFD;
+
+  /* 의미 */
+  --success:       #16A34A;
+  --warn:          #D97706;
+  --danger:        #DC2626;
+
+  /* 간격 — 4px 그리드 */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* 형태 */
+  --r-sm:   8px;
+  --r-md:   12px;
+  --r-lg:   16px;
+  --r-xl:   20px;
+  --r-full: 9999px;
+
+  /* 깊이 — 3단계(떠 있는 것)에만 */
+  --shadow: 0 4px 16px rgba(26, 29, 35, .08);
+
+  /* 폰트 */
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system,
+               'Segoe UI', 'Malgun Gothic', sans-serif;
+  --font-num:  'SF Pro Display', -apple-system, 'Segoe UI', sans-serif;
+
+  /* 레이아웃 */
+  --gutter:     var(--space-5);
+  --tabbar-h:   56px;
+  --minibar-h:  48px;
+}
+
+/* 집중 모드 — 포커스 타이머, 차단 오버레이에만 */
+[data-mode="focus"] {
+  --bg:            #12141A;
+  --surface:       #1C1F27;
+  --surface-2:     #242833;
+
+  --text:          #ECEEF3;
+  --text-2:        #A8AFBD;
+  --text-3:        #6B7280;
+
+  --border:        #2A2E38;
+  --border-strong: #3A3F4B;
+
+  --accent:        #5B8CFF;
+  --accent-weak:   #1B2440;
+
+  --ai:            #9B82F0;
+  --ai-weak:       #241E3A;
+
+  --success:       #34D399;
+
+  /* 다크에서는 그림자가 보이지 않는다 — 테두리로 대체 */
+  --shadow: none;
+}
+
+/* ── 타이포 스케일 (DESIGN.md §3) ───────────────────── */
+
+.t-display {
+  font-family: var(--font-num);
+  font-size: 56px; line-height: 1.0; font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.t-h1 {
+  font-size: 28px; line-height: 1.3; font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.t-h2 {
+  font-size: 20px; line-height: 1.4; font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.t-h3      { font-size: 17px; line-height: 1.4; font-weight: 600; }
+.t-body    { font-size: 15px; line-height: 1.6; font-weight: 400; }
+.t-body-sm { font-size: 14px; line-height: 1.5; font-weight: 400; }
+.t-caption { font-size: 13px; line-height: 1.4; font-weight: 500; }
+.t-micro   { font-size: 11px; line-height: 1.3; font-weight: 600; }
+
+/* 숫자는 항상 tabular — 타이머가 흔들리지 않게 */
+.num { font-variant-numeric: tabular-nums; }
+
+/* DESIGN.md §4 — 컴포넌트
+   토큰만 사용한다. 색·간격 하드코딩 금지. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: var(--surface-2);
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; }
+
+/* ══ 프레임 (DESIGN.md §5 · §8) ═══════════════════════ */
+
+.stage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+.phone {
+  position: relative;
+  width: 375px;
+  height: 812px;
+  max-width: 430px;
+  background: var(--bg);
+  border-radius: 36px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.screen {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;             /* 가로 스크롤이 생기면 버그 */
+  padding-bottom: var(--space-8);
+
+  /* 실제 기기에는 상시 스크롤바가 없다 — 프레임 폭을 갉아먹지 않도록 숨김 */
+  scrollbar-width: none;
+}
+.screen::-webkit-scrollbar { display: none; }
+
+.screen--tabbed { padding-bottom: calc(var(--tabbar-h) + var(--space-6)); }
+.screen--mini   { padding-bottom: calc(var(--tabbar-h) + var(--minibar-h) + var(--space-6)); }
+
+.pad   { padding-inline: var(--gutter); }
+.stack { display: flex; flex-direction: column; }
+
+.mt-2 { margin-top: var(--space-2); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+.muted  { color: var(--text-2); }
+.muted3 { color: var(--text-3); }
+
+@media (max-width: 359px) {
+  :root { --gutter: var(--space-4); }
+  .t-display { font-size: 48px; }
+}
+
+/* ══ 상단 바 ══════════════════════════════════════════ */
+
+.appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 52px;
+  padding-inline: var(--gutter);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.appbar__title { flex: 1; }
+.appbar--center .appbar__title { text-align: center; }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  border: 0; background: none;
+  border-radius: var(--r-md);
+  color: var(--text-2);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.icon-btn:hover { background: var(--surface-2); }
+
+/* ══ banner — 상단 고정 배너 ══════════════════════════ */
+
+.banner {
+  height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+/* ══ 카드 프리미티브 ══════════════════════════════════ */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--space-4);
+}
+.card--quiet { background: var(--surface-2); border-color: transparent; }
+
+/* ══ goal-card — 목표 요약 ════════════════════════════ */
+
+.goal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--space-4);
+}
+
+.goal-card__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.goal-card__name  { color: var(--text); }
+.goal-card__dday  { color: var(--text-2); white-space: nowrap; }
+
+.goal-card__rate {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.goal-card__rate strong { color: var(--text); }
+.goal-card__rate span   { color: var(--text-3); }
+
+.gauge {
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.gauge > i {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+
+/* ══ 날짜 스트립 (가로 스크롤 허용 예외) ══════════════ */
+
+.datestrip {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+.datestrip::-webkit-scrollbar { display: none; }
+
+.dateitem {
+  flex: 1 0 44px;
+  min-width: 44px;
+  height: 62px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  color: var(--text-3);
+  cursor: pointer;
+}
+.dateitem b { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+.dateitem[aria-selected="true"] {
+  background: var(--accent-weak);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.dateitem[aria-selected="true"] b { color: var(--accent); }
+
+.dateitem__dot {
+  width: 4px; height: 4px;
+  border-radius: var(--r-full);
+  background: var(--text-3);
+}
+.dateitem[aria-selected="true"] .dateitem__dot { background: var(--accent); }
+.dateitem[data-empty="true"] .dateitem__dot    { background: transparent; }
+
+/* ══ badge / ai-badge ═════════════════════════════════ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 20px;
+  padding-inline: var(--space-2);
+  border-radius: var(--r-full);
+  white-space: nowrap;
+}
+.badge--ai   { background: var(--ai-weak);    color: var(--ai); }
+.badge--ai::before { content: "✦"; font-size: 9px; }
+.badge--user { background: var(--surface-2);  color: var(--text-3); }
+.badge--on   { background: var(--accent-weak); color: var(--accent); }
+
+/* ══ plan-block ═══════════════════════════════════════ */
+
+.plan-list { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.plan-block {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--space-4);
+}
+
+.plan-block__check {
+  width: 24px; height: 24px;
+  margin-top: 2px;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--r-full);
+  background: none;
+  cursor: pointer;
+  display: grid; place-items: center;
+  color: transparent;
+  flex-shrink: 0;
+}
+
+.plan-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+.plan-block__time  { color: var(--text-2); }
+.plan-block__title { color: var(--text); }
+.plan-block__meta  { color: var(--text-3); margin-top: var(--space-1); }
+
+.plan-block[data-state="active"] {
+  border: 2px solid var(--accent);
+  padding: calc(var(--space-4) - 1px);
+}
+.plan-block__now {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  margin-bottom: var(--space-1);
+}
+.plan-block__now::before { content: "▸"; }
+
+.plan-block[data-state="done"] {
+  background: var(--surface-2);
+  border-color: transparent;
+}
+.plan-block[data-state="done"] .plan-block__title {
+  text-decoration: line-through;
+  color: var(--text-3);
+}
+.plan-block[data-state="done"] .plan-block__time,
+.plan-block[data-state="done"] .plan-block__meta { color: var(--text-3); }
+.plan-block[data-state="done"] .plan-block__check {
+  border-color: var(--text-3);
+  background: var(--text-3);
+  color: var(--surface);
+}
+
+/* ══ ring — 원형 진행바 (포커스 타이머) ═══════════════ */
+
+.ring {
+  position: relative;
+  width: 260px; height: 260px;
+  margin-inline: auto;
+}
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring__track {
+  fill: none;
+  stroke: var(--surface-2);
+  stroke-width: 10;
+}
+.ring__bar {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+/* ══ overlay — 전면 차단 화면 ═════════════════════════ */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--gutter);
+  text-align: center;
+  z-index: 10;
+}
+.overlay__reason { color: var(--text-2); max-width: 260px; }
+.overlay__time   { color: var(--text); }
+.overlay__label  { color: var(--text-3); }
+.overlay__acts   { width: 100%; display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* ══ bottom-sheet ═════════════════════════════════════ */
+
+.dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .32);
+  z-index: 20;
+}
+
+.bottom-sheet {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: var(--surface);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: var(--space-3) var(--space-5) var(--space-6);
+  z-index: 21;
+  box-shadow: var(--shadow);
+  max-height: 78%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.bottom-sheet::-webkit-scrollbar { display: none; }
+
+.bottom-sheet__handle {
+  width: 36px; height: 4px;
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+  margin: 0 auto var(--space-5);
+}
+.bottom-sheet__title { margin-bottom: var(--space-4); }
+
+/* ══ dialog — 확인 다이얼로그 ═════════════════════════ */
+
+.dialog {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - var(--space-10));
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  z-index: 21;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.dialog__title { margin-bottom: var(--space-2); }
+.dialog__body  { color: var(--text-2); margin-bottom: var(--space-6); }
+.dialog__acts  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+
+/* ══ segment — 세그먼트 탭 ════════════════════════════ */
+
+.segment {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0;
+  padding: 3px;
+  background: var(--surface-2);
+  border-radius: var(--r-full);
+}
+.segment__item {
+  height: 34px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: none;
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.segment__item[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+
+/* ══ chip ═════════════════════════════════════════════ */
+
+.chip-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.chip {
+  height: 36px;
+  padding-inline: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+.chip[aria-selected="true"] {
+  background: var(--accent-weak);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* 설명이 붙는 큰 선택 칩 (현재 수준 입력) */
+.chip-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  cursor: pointer;
+}
+.chip-card b    { display: block; color: var(--text); font-size: 15px; font-weight: 600; }
+.chip-card span { display: block; color: var(--text-3); font-size: 13px; margin-top: 2px; }
+.chip-card[aria-selected="true"] {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+}
+.chip-card[aria-selected="true"] b { color: var(--accent); }
+
+/* ══ list-row / toggle-row — 설정 행 ══════════════════ */
+
+.list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.list--plain { background: none; border: 0; border-radius: 0; }
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.list-row + .list-row { border-top: 1px solid var(--border); }
+.list-row__label { flex: 1; }
+.list-row__label small {
+  display: block;
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 400;
+  margin-top: 2px;
+}
+.list-row__value { color: var(--text-3); }
+.list-row__chev  { color: var(--text-3); flex-shrink: 0; }
+.list-row--danger .list-row__label { color: var(--danger); }
+
+/* 스위치 */
+.switch {
+  width: 51px; height: 31px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 25px; height: 25px;
+  border-radius: var(--r-full);
+  background: #fff;
+  transition: left .15s ease;
+}
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"]::after { left: 23px; }
+
+/* ══ stat-tile — 통계 타일 ════════════════════════════ */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;    /* 어떤 폭에서도 2열 유지 */
+  gap: var(--space-3);
+}
+.stat-tile {
+  background: var(--surface-2);
+  border-radius: var(--r-lg);
+  padding: var(--space-4);
+}
+.stat-tile__label { color: var(--text-2); display: block; margin-bottom: var(--space-2); }
+.stat-tile__value { color: var(--text); }
+
+/* ══ bars — 막대그래프 ════════════════════════════════ */
+
+.bars {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: end;
+  gap: var(--space-2);
+  height: 148px;
+}
+.bars__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  height: 100%;
+  justify-content: flex-end;
+}
+.bars__bar {
+  width: 100%;
+  max-width: 24px;
+  border-radius: var(--r-sm);
+  background: var(--accent-weak);
+}
+.bars__col[data-today="true"] .bars__bar { background: var(--accent); }
+.bars__label { color: var(--text-3); }
+
+/* 스파크라인 (마이페이지 미리보기) */
+.spark {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: end;
+  gap: var(--space-2);
+  height: 44px;
+}
+.spark i {
+  display: block;
+  width: 100%;
+  max-width: 6px;
+  margin-inline: auto;
+  border-radius: var(--r-full);
+  background: var(--accent-weak);
+}
+.spark i[data-today="true"] { background: var(--accent); }
+
+/* ══ ai-card — AI 인사이트 ════════════════════════════ */
+
+.ai-card {
+  background: var(--ai-weak);
+  border-radius: var(--r-lg);
+  padding: var(--space-5);
+}
+.ai-card__body { color: var(--text); margin: var(--space-3) 0 var(--space-4); }
+.ai-card .btn--quiet { background: var(--surface); }
+
+/* ══ field — 입력 필드 ════════════════════════════════ */
+
+.field { display: block; }
+.field + .field { margin-top: var(--space-4); }
+
+.field__label {
+  display: block;
+  color: var(--text-2);
+  margin-bottom: var(--space-2);
+}
+.field__input,
+.field__area {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  padding: 0 var(--space-4);
+  height: 52px;
+}
+.field__area {
+  height: auto;
+  min-height: 132px;
+  padding: var(--space-4);
+  line-height: 1.6;
+  resize: none;
+}
+.field__input::placeholder,
+.field__area::placeholder { color: var(--text-3); }
+.field__input:focus,
+.field__area:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+.field__help  { display: block; color: var(--text-3); margin-top: var(--space-2); }
+.field__error { display: block; color: var(--danger); margin-top: var(--space-2); }
+
+/* 인증번호 6자리 */
+.otp { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-2); }
+.otp input {
+  height: 56px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 숫자 스테퍼 (목표 시간 입력) */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+}
+.stepper__btn {
+  width: 48px; height: 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 22px;
+  cursor: pointer;
+}
+.stepper__value { min-width: 120px; text-align: center; }
+
+/* ══ steps — 단계 인디케이터 ══════════════════════════ */
+
+.steps { display: flex; gap: var(--space-2); }
+.steps i {
+  flex: 1;
+  height: 3px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+}
+.steps i[data-on="true"] { background: var(--accent); }
+
+/* ══ appcard — 차단 앱 카드 ═══════════════════════════ */
+
+.appcard {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: var(--space-3);
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--space-4);
+}
+.appcard__icon {
+  width: 40px; height: 40px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  display: grid; place-items: center;
+  color: var(--text-3);
+  font-size: 18px;
+}
+.appcard__name { color: var(--text); display: block; }
+.appcard__tag {
+  margin-top: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 22px;
+  padding-inline: var(--space-2);
+  border-radius: var(--r-full);
+  background: var(--ai-weak);
+  color: var(--ai);
+  border: 0;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.appcard__tag::after { content: "▾"; }
+.appcard__why {
+  display: inline-block;
+  margin-top: var(--space-3);
+  color: var(--text-3);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-size: 13px;
+}
+.appcard[data-changed="true"] { border-color: var(--accent); }
+
+/* ══ social — 소셜 로그인 버튼 ════════════════════════ */
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 52px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.social + .social { margin-top: var(--space-2); }
+.social__mark {
+  width: 20px; height: 20px;
+  border-radius: var(--r-full);
+  flex-shrink: 0;
+}
+.social--kakao  { background: #FEE500; border-color: #FEE500; color: #191600; }
+.social--naver  { background: #03C75A; border-color: #03C75A; color: #fff; }
+.social--google { background: var(--surface); }
+
+/* ══ toast — 즉시 반영 안내 ═══════════════════════════ */
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--tabbar-h) + var(--space-6));
+  transform: translate(-50%, 8px);
+  max-width: calc(100% - var(--space-10));
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--r-full);
+  background: var(--text);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 40;
+  pointer-events: none;
+}
+.toast[data-on="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+/* PC 화면은 폰 프레임이 없으므로 뷰포트 기준으로 띄운다 */
+.toast--page { position: fixed; bottom: var(--space-8); }
+
+/* ══ skeleton ═════════════════════════════════════════ */
+
+.skeleton {
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  animation: sk 1.4s ease-in-out infinite;
+}
+@keyframes sk { 0%, 100% { opacity: .6 } 50% { opacity: 1 } }
+
+/* ══ empty-state ══════════════════════════════════════ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-12) var(--space-5);
+  text-align: center;
+}
+.empty-state p { color: var(--text-2); }
+
+/* ══ 버튼 ═════════════════════════════════════════════ */
+
+.btn {
+  height: 48px;
+  padding-inline: var(--space-5);
+  border: 0;
+  border-radius: var(--r-md);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+.btn--primary { background: var(--accent);    color: #fff; }
+.btn--quiet   { background: var(--surface-2); color: var(--text); }
+.btn--outline { background: none; color: var(--text); border: 1px solid var(--border-strong); }
+.btn--danger  { background: var(--danger);    color: #fff; }
+.btn--block   { display: flex; width: 100%; }
+.btn--text    { background: none; color: var(--text-2); height: 44px; font-weight: 500; }
+.btn:disabled { background: var(--surface-2); color: var(--text-3); cursor: not-allowed; }
+
+/* 화면 하단 고정 버튼 영역 */
+.footbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: var(--space-4) var(--gutter) var(--space-6);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  z-index: 5;
+}
+
+/* ══ 진행 중 미니바 ═══════════════════════════════════ */
+
+.minibar {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: var(--tabbar-h);
+  height: var(--minibar-h);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline: var(--gutter);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+.minibar__dot {
+  width: 8px; height: 8px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.minibar__label {
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.minibar__time { color: var(--accent); font-weight: 600; }
+
+/* ══ 하단 탭바 (3개) ══════════════════════════════════ */
+
+.tabbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--tabbar-h);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.tabbar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 0;
+  background: none;
+  color: var(--text-3);
+  cursor: pointer;
+  min-height: 44px;              /* 터치 타겟 */
+}
+.tabbar__item[aria-current="page"] { color: var(--accent); }
+
+
+/* 한 장 보기 전용 */
+body { background: var(--surface-2); }
+.sheet {
+  display: flex; flex-wrap: wrap;
+  gap: var(--space-10) var(--space-8);
+  padding: var(--space-10);
+  align-items: flex-start; justify-content: center;
+}
+.cell { width: 375px; }
+.cell__label {
+  display: flex; align-items: baseline; gap: var(--space-2);
+  margin-bottom: var(--space-3); padding-inline: var(--space-1);
+}
+.cell__label b { color: var(--text); font-size: 15px; font-weight: 600; }
+.cell__label span { color: var(--text-3); font-size: 12px; }
+.cell .phone { box-shadow: 0 4px 16px rgba(26,29,35,.08); }
+.sheet__head { width: 100%; text-align: center; padding: var(--space-8) var(--space-5) 0; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="sheet__head">
+    <h1 class="t-h1 mb-3">집중 지원 앱 — 모바일 전체 화면</h1>
+    <p class="t-body muted">화면 25개 · 자바스크립트 없이 정적으로 생성됨</p>
+  </div>
+
+<div class="cell">
+  <div class="cell__label"><b>목표 시간 입력</b><span>온보딩 1/3</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- 단계 인디케이터 1/3 -->
+      <div class="pad mb-8">
+        <div class="steps">
+          <i data-on="true"></i><i></i><i></i>
+        </div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-3">하루에 몇 시간<br>공부할 수 있나요?</h1>
+        <p class="t-body muted">이 시간을 기준으로 AI가 계획을 짭니다.<br>나중에 언제든 바꿀 수 있어요.</p>
+      </section>
+
+      <!-- 숫자 스테퍼 -->
+      <section class="pad mt-8" style="padding-block:var(--space-10) 0">
+        <div class="stepper">
+          <button class="stepper__btn" aria-label="30분 줄이기">−</button>
+          <div class="stepper__value">
+            <span class="t-display num">2.5</span>
+            <span class="t-h3 muted3">시간</span>
+          </div>
+          <button class="stepper__btn" aria-label="30분 늘리기">+</button>
+        </div>
+        <p class="t-caption muted3 mt-6" style="text-align:center">30분 단위로 조절됩니다</p>
+      </section>
+
+      <!-- 빠른 선택 -->
+      <section class="pad mt-8">
+        <div class="chip-row" style="justify-content:center">
+          <button class="chip">1시간</button>
+          <button class="chip">2시간</button>
+          <button class="chip" aria-selected="true">2.5시간</button>
+          <button class="chip">4시간</button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">다음</button>
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>현재 수준 입력</b><span>온보딩 2/3</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <!-- 입력 부담을 낮추는 건너뛰기 (명세: 선택 사항) -->
+        <button class="btn btn--text" style="padding-inline:var(--space-2)">건너뛰기</button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps">
+          <i data-on="true"></i><i data-on="true"></i><i></i>
+        </div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-3">지금 어느 정도<br>알고 계신가요?</h1>
+        <p class="t-body muted">주관적인 느낌을 객관적인 기준으로 바꾸기 위한 질문입니다.</p>
+      </section>
+
+      <!-- 수준별 명확한 가이드 (명세 확정 문구) -->
+      <section class="pad mt-8">
+        <div class="stack" style="gap:var(--space-3)">
+          <button class="chip-card">
+            <b>초급</b>
+            <span>용어 및 기초 지식 없음</span>
+          </button>
+          <button class="chip-card" aria-selected="true">
+            <b>중급</b>
+            <span>기초 이론 1회독 완료</span>
+          </button>
+          <button class="chip-card">
+            <b>고급</b>
+            <span>기출 풀이 및 실전 대비 단계</span>
+          </button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">다음</button>
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>목표 내용 입력</b><span>온보딩 3/3</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps">
+          <i data-on="true"></i><i data-on="true"></i><i data-on="true"></i>
+        </div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-3">무엇을 이루고<br>싶으신가요?</h1>
+        <p class="t-body muted">구체적으로 쓸수록 계획이 정확해집니다.</p>
+      </section>
+
+      <section class="pad mt-6">
+        <label class="field">
+          <textarea class="field__area"
+            placeholder="예) 10월 정보처리기사 필기 합격하기">정보처리기사 필기 합격하기</textarea>
+          <span class="t-caption field__help">언제까지, 무엇을 — 이 두 가지가 들어가면 좋습니다</span>
+        </label>
+      </section>
+
+      <!-- 예시 문구 제공 (명세: 입력 부담 완화) -->
+      <section class="pad mt-6">
+        <h2 class="t-caption muted mb-3">이렇게 쓴 사람들이 있어요</h2>
+        <div class="stack" style="gap:var(--space-2)">
+          <button class="chip-card"><b class="t-body-sm" style="font-weight:400">3개월 안에 토익 800점 넘기기</b></button>
+          <button class="chip-card"><b class="t-body-sm" style="font-weight:400">기말고사 전공 4과목 A 받기</b></button>
+          <button class="chip-card"><b class="t-body-sm" style="font-weight:400">포트폴리오용 웹앱 1개 완성하기</b></button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">계획 만들기</button>
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>AI 분석 중</b><span>로딩</span></div>
+  <div class="phone">
+    <div class="screen">
+
+      <header class="appbar"></header>
+
+      <!-- 스피너를 쓰지 않는다. 들어갈 내용 모양대로 스켈레톤을 놓는다 (DESIGN.md §7) -->
+      <section class="pad mt-8">
+        <span class="badge badge--ai t-micro">AI 분석 중</span>
+        <h1 class="t-h1 mt-4 mb-3">계획을 만들고 있어요</h1>
+        <p class="t-body muted">목표와 하루 가능 시간을 맞춰보는 중입니다.<br>20초쯤 걸려요.</p>
+      </section>
+
+      <section class="pad mt-8">
+        <div class="stack" style="gap:var(--space-3)">
+          <div class="card">
+            <div class="skeleton" style="height:13px; width:38%"></div>
+            <div class="skeleton mt-3" style="height:24px; width:56%"></div>
+          </div>
+          <div class="card">
+            <div class="skeleton" style="height:13px; width:44%"></div>
+            <div class="skeleton mt-3" style="height:24px; width:48%"></div>
+          </div>
+          <div class="card">
+            <div class="skeleton" style="height:13px; width:34%"></div>
+            <div class="skeleton mt-3" style="height:24px; width:62%"></div>
+          </div>
+          <div class="ai-card">
+            <div class="skeleton" style="height:20px; width:64px; background:var(--surface)"></div>
+            <div class="skeleton mt-4" style="height:15px; width:100%; background:var(--surface)"></div>
+            <div class="skeleton mt-2" style="height:15px; width:82%;  background:var(--surface)"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 진행 상황 문구 -->
+      <section class="pad mt-8">
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted3">목표 해석</span>
+            <span class="t-caption" style="color:var(--success)">완료</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">주간 계획 배치</span>
+            <span class="t-caption" style="color:var(--ai)">진행 중</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted3">일정별 시간 배정</span>
+            <span class="t-caption muted3">대기</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>계획 생성 결과</b><span>결과</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar"></header>
+
+      <section class="pad">
+        <span class="badge badge--ai t-micro">AI 분석 완료</span>
+        <h1 class="t-h1 mt-4 mb-3">계획이 준비됐어요</h1>
+        <p class="t-body muted">정보처리기사 필기 합격 · 하루 2.5시간 기준</p>
+      </section>
+
+      <!-- (1)(2)(3) 분석 결과 카드 -->
+      <section class="pad mt-8">
+        <div class="stack" style="gap:var(--space-3)">
+
+          <div class="card">
+            <span class="t-caption muted">예상 목표 달성 기간</span>
+            <p class="t-h2 mt-2"><span class="num">약 10주</span></p>
+            <p class="t-caption muted3 mt-2">지금 속도를 유지하면 10월 셋째 주쯤 끝나요</p>
+          </div>
+
+          <div class="card">
+            <span class="t-caption muted">주간 추천 학습시간</span>
+            <p class="t-h2 mt-2"><span class="num">주 14시간</span></p>
+            <p class="t-caption muted3 mt-2">평일 2시간 · 주말 2시간씩 나눠 배치했어요</p>
+          </div>
+
+          <div class="card">
+            <span class="t-caption muted">첫 주 집중 영역</span>
+            <p class="t-h2 mt-2">이론 · 개념 정리</p>
+            <p class="t-caption muted3 mt-2">중급 단계라 개념을 먼저 다진 뒤 기출로 넘어갑니다</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- (4) AI 처방 코멘트 -->
+      <section class="pad mt-6">
+        <div class="ai-card">
+          <span class="badge badge--ai t-micro">AI 처방</span>
+          <p class="t-body ai-card__body">
+            하루 2.5시간이면 넉넉한 편이에요. 다만 마지막 2주는 기출 반복에
+            시간이 몰리니, 초반 4주 동안 개념을 확실히 끝내두는 게 좋습니다.
+          </p>
+          <button class="btn btn--quiet">근거 보기</button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">계획 확인하러 가기</button>
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>홈 (계획)</b><span>메인</span></div>
+  <div class="phone">
+    <div class="screen">
+
+      <!-- 상단 바 -->
+      <header class="appbar">
+        <h1 class="t-h1">계획</h1>
+        <button class="icon-btn" aria-label="이번 주 계획 다시 만들기">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="4"  r="1.6" fill="currentColor"/>
+            <circle cx="10" cy="10" r="1.6" fill="currentColor"/>
+            <circle cx="10" cy="16" r="1.6" fill="currentColor"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- 목표 요약 카드 -->
+      <section class="pad" style="margin-bottom: var(--space-6)">
+        <div class="goal-card">
+          <div class="goal-card__top">
+            <span class="t-h3 goal-card__name">정보처리기사 필기 합격</span>
+            <span class="t-caption goal-card__dday num">D-27</span>
+          </div>
+          <div class="goal-card__rate">
+            <strong class="t-h1 num">68</strong>
+            <span class="t-h3">%</span>
+            <span class="t-caption" style="margin-left:auto">34시간 / 50시간</span>
+          </div>
+          <div class="gauge"><i style="width:68%"></i></div>
+        </div>
+      </section>
+
+      <!-- 주간 날짜 스트립 -->
+      <nav class="datestrip" aria-label="주간 날짜" style="margin-bottom: var(--space-6)">
+        <button class="dateitem"><span class="t-micro">월</span><b class="t-body-sm">11</b><i class="dateitem__dot"></i></button>
+        <button class="dateitem"><span class="t-micro">화</span><b class="t-body-sm">12</b><i class="dateitem__dot"></i></button>
+        <button class="dateitem" aria-selected="true"><span class="t-micro">수</span><b class="t-body-sm">13</b><i class="dateitem__dot"></i></button>
+        <button class="dateitem"><span class="t-micro">목</span><b class="t-body-sm">14</b><i class="dateitem__dot"></i></button>
+        <button class="dateitem"><span class="t-micro">금</span><b class="t-body-sm">15</b><i class="dateitem__dot"></i></button>
+        <button class="dateitem" data-empty="true"><span class="t-micro">토</span><b class="t-body-sm">16</b><i class="dateitem__dot"></i></button>
+        <button class="dateitem" data-empty="true"><span class="t-micro">일</span><b class="t-body-sm">17</b><i class="dateitem__dot"></i></button>
+      </nav>
+
+      <!-- 일정 목록 -->
+      <section class="pad">
+        <ul class="plan-list" style="list-style:none">
+
+          <!-- 완료 -->
+          <li class="plan-block" data-state="done">
+            <button class="plan-block__check" aria-label="완료 해제">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6.2L4.6 8.8L10 3.4" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div>
+              <div class="plan-block__head">
+                <span class="t-caption plan-block__time num">07:30 – 08:30</span>
+                <span class="badge badge--ai t-micro">AI 추천</span>
+              </div>
+              <p class="t-h3 plan-block__title">개념 정리 — 소프트웨어 설계</p>
+            </div>
+          </li>
+
+          <!-- 진행중 -->
+          <li class="plan-block" data-state="active">
+            <button class="plan-block__check" aria-label="완료 표시"></button>
+            <div>
+              <div class="plan-block__head">
+                <span class="t-caption plan-block__time num">10:00 – 11:30</span>
+                <span class="badge badge--ai t-micro">AI 추천</span>
+              </div>
+              <span class="t-micro plan-block__now">진행중</span>
+              <p class="t-h3 plan-block__title">기출문제 풀이</p>
+              <p class="t-caption plan-block__meta">AI 예상 소요시간 1시간 30분</p>
+            </div>
+          </li>
+
+          <!-- 예정 · 직접 추가 -->
+          <li class="plan-block">
+            <button class="plan-block__check" aria-label="완료 표시"></button>
+            <div>
+              <div class="plan-block__head">
+                <span class="t-caption plan-block__time num">14:00 – 15:00</span>
+                <span class="badge badge--user t-micro">직접 추가</span>
+              </div>
+              <p class="t-h3 plan-block__title">오답 노트 정리</p>
+            </div>
+          </li>
+
+          <!-- 예정 -->
+          <li class="plan-block">
+            <button class="plan-block__check" aria-label="완료 표시"></button>
+            <div>
+              <div class="plan-block__head">
+                <span class="t-caption plan-block__time num">20:00 – 21:00</span>
+                <span class="badge badge--ai t-micro">AI 추천</span>
+              </div>
+              <p class="t-h3 plan-block__title">데이터베이스 구축 파트</p>
+              <p class="t-caption plan-block__meta">AI 예상 소요시간 1시간</p>
+            </div>
+          </li>
+
+        </ul>
+      </section>
+
+    </div><!-- /screen -->
+
+    <!-- 진행 중 미니바 — 집중 세션 중일 때만 -->
+    <div class="minibar" role="button" tabindex="0">
+      <i class="minibar__dot"></i>
+      <span class="t-caption minibar__label">집중 중 · 기출문제 풀이</span>
+      <span class="t-caption minibar__time num">24:13</span>
+    </div>
+
+    <!-- 하단 탭바 -->
+    <nav class="tabbar">
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        <span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>홈 — 빈 상태</b><span>빈 상태</span></div>
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <!-- 오프라인 상단 고정 배너 (확정 문구) -->
+      <div class="banner t-caption">오프라인 상태예요, 일부 기능이 제한돼요</div>
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">계획</h1></header>
+
+      <!--
+        계획이 없는 첫 홈 화면. 빈 스케줄 대신 CTA 카드를 중앙에 배치한다 (agy B-6).
+        빈 상태에 일러스트를 넣지 않는다 — 문구와 버튼이면 충분하다 (DESIGN.md §7).
+      -->
+      <section class="empty-state" style="padding-top:var(--space-12)">
+        <p class="t-body">아직 계획이 없어요.<br>목표를 알려주시면 AI가 첫 주 계획을 짜드릴게요.</p>
+        <button class="btn btn--primary">목표 입력하고 첫 계획 받기</button>
+      </section>
+
+      <!-- 계획 생성 실패 상태 (확정 문구) -->
+      <section class="pad mt-8">
+        <h2 class="t-caption muted mb-3">참고 · 생성 실패 시</h2>
+        <div class="card">
+          <p class="t-body mb-4">계획을 만드는 데 문제가 생겼어요</p>
+          <button class="btn btn--outline">다시 시도</button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>계획 편집</b><span>바텀시트</span></div>
+  <div class="phone">
+
+    <!-- 뒤에 깔린 홈 화면 -->
+    <div class="screen screen--tabbed">
+      <header class="appbar"><h1 class="t-h1 appbar__title">계획</h1></header>
+
+      <section class="pad mb-6">
+        <div class="goal-card">
+          <div class="goal-card__top">
+            <span class="t-h3 goal-card__name">정보처리기사 필기 합격</span>
+            <span class="t-caption goal-card__dday num">D-27</span>
+          </div>
+          <div class="goal-card__rate">
+            <strong class="t-h1 num">68</strong><span class="t-h3">%</span>
+            <span class="t-caption" style="margin-left:auto">34시간 / 50시간</span>
+          </div>
+          <div class="gauge"><i style="width:68%"></i></div>
+        </div>
+      </section>
+
+      <section class="pad">
+        <ul class="plan-list" style="list-style:none">
+          <li class="plan-block" data-state="done">
+            <button class="plan-block__check" aria-label="완료 해제">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6.2L4.6 8.8L10 3.4" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div>
+              <div class="plan-block__head">
+                <span class="t-caption plan-block__time num">07:30 – 08:30</span>
+                <span class="badge badge--ai t-micro">AI 추천</span>
+              </div>
+              <p class="t-h3 plan-block__title">개념 정리 — 소프트웨어 설계</p>
+            </div>
+          </li>
+          <li class="plan-block">
+            <button class="plan-block__check" aria-label="완료 표시"></button>
+            <div>
+              <div class="plan-block__head">
+                <span class="t-caption plan-block__time num">14:00 – 15:00</span>
+                <span class="badge badge--user t-micro">직접 추가</span>
+              </div>
+              <p class="t-h3 plan-block__title">오답 노트 정리</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <!--
+      롱프레스로 열리는 인라인 수정 시트.
+      별도 페이지 이동 없이 시트 안에서 즉시 반영한다 (agy A-2).
+    -->
+    <div class="bottom-sheet" role="dialog" aria-label="일정 수정">
+      <div class="bottom-sheet__handle"></div>
+      <h2 class="t-h2 bottom-sheet__title">일정 수정</h2>
+
+      <label class="field">
+        <span class="t-caption field__label">제목</span>
+        <input class="field__input" value="오답 노트 정리">
+      </label>
+
+      <div class="field">
+        <span class="t-caption field__label">시간</span>
+        <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:var(--space-2)">
+          <input class="field__input num" value="14:00" style="text-align:center">
+          <span class="t-body muted3">–</span>
+          <input class="field__input num" value="15:00" style="text-align:center">
+        </div>
+      </div>
+
+      <label class="field">
+        <span class="t-caption field__label">메모</span>
+        <textarea class="field__area" style="min-height:76px"
+                  placeholder="기억할 내용을 적어두세요">3장 오답 위주로</textarea>
+      </label>
+
+      <div class="mt-6" style="display:grid; grid-template-columns:1fr 2fr; gap:var(--space-2)">
+        <button class="btn btn--quiet">삭제</button>
+        <button class="btn btn--primary">저장</button>
+      </div>
+    </div>
+
+    <nav class="tabbar">
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>계획 재생성 확인</b><span>다이얼로그</span></div>
+  <div class="phone">
+
+    <div class="screen screen--tabbed">
+      <header class="appbar">
+        <h1 class="t-h1 appbar__title">계획</h1>
+      </header>
+      <section class="pad mb-6">
+        <div class="goal-card">
+          <div class="goal-card__top">
+            <span class="t-h3 goal-card__name">정보처리기사 필기 합격</span>
+            <span class="t-caption goal-card__dday num">D-27</span>
+          </div>
+          <div class="goal-card__rate">
+            <strong class="t-h1 num">68</strong><span class="t-h3">%</span>
+          </div>
+          <div class="gauge"><i style="width:68%"></i></div>
+        </div>
+      </section>
+      <section class="pad">
+        <ul class="plan-list" style="list-style:none">
+          <li class="plan-block" data-state="done">
+            <button class="plan-block__check">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6.2L4.6 8.8L10 3.4" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div><p class="t-h3 plan-block__title">개념 정리 — 소프트웨어 설계</p></div>
+          </li>
+          <li class="plan-block">
+            <button class="plan-block__check"></button>
+            <div><p class="t-h3 plan-block__title">오답 노트 정리</p></div>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <!--
+      확정 문구를 그대로 쓴다 (DESIGN.md §7).
+      완료 항목과의 충돌 규칙은 아직 미정 — agy B-4 참조.
+    -->
+    <div class="dialog" role="alertdialog" aria-label="계획 재생성 확인">
+      <span class="badge badge--ai t-micro">AI 계획 재생성</span>
+      <h2 class="t-h2 dialog__title mt-4">이번 주 계획 다시 만들기</h2>
+      <p class="t-body dialog__body">완료한 일정은 유지하고 남은 일정만 다시 짤까요?</p>
+      <div class="dialog__acts">
+        <button class="btn btn--quiet">취소</button>
+        <button class="btn btn--primary">다시 만들기</button>
+      </div>
+    </div>
+
+    <nav class="tabbar">
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>포커스 타이머</b><span>집중 모드</span></div>
+  <div class="phone" data-mode="focus">
+    <div class="screen">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="badge badge--on t-micro">집중모드 켜짐</span>
+      </header>
+
+      <!-- 진행 중 일정 -->
+      <section class="pad mt-4" style="text-align:center">
+        <p class="t-h3">기출문제 풀이</p>
+        <p class="t-caption muted3 mt-2">AI 예상 소요시간 1시간 30분</p>
+      </section>
+
+      <!-- 원형 진행바 -->
+      <section class="mt-8 mb-8">
+        <div class="ring">
+          <svg viewBox="0 0 260 260" aria-hidden="true">
+            <circle class="ring__track" cx="130" cy="130" r="115"/>
+            <circle class="ring__bar"   cx="130" cy="130" r="115"
+                    stroke-dasharray="722.57" stroke-dashoffset="527.48"/>
+          </svg>
+          <div class="ring__center">
+            <span class="t-display num">24:13</span>
+            <span class="t-caption muted3 num">1시간 30분 중 27%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 컨트롤 -->
+      <section class="pad">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3)">
+          <button class="btn btn--outline">일시정지</button>
+          <button class="btn btn--primary">종료</button>
+        </div>
+      </section>
+
+      <!-- 오늘 완료한 세션 -->
+      <section class="pad mt-8">
+        <h2 class="t-caption muted mb-3">오늘 완료한 세션</h2>
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">개념 정리 — 소프트웨어 설계</span>
+            <span class="t-caption list-row__value num">58분</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">전날 오답 확인</span>
+            <span class="t-caption list-row__value num">26분</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>알림 권한 동의</b><span>최초 1회</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:160px">
+
+      <header class="appbar"></header>
+
+      <!--
+        집중모드 최초 진입 시 1회 노출되는 전체화면 안내 카드 (agy B-2).
+        차단 기능보다 먼저 확정되어야 하는 항목이라 문구를 그대로 쓴다.
+      -->
+      <section class="pad mt-8">
+        <h1 class="t-h1 mb-3">알림을 걸러내려면<br>권한이 필요해요</h1>
+        <p class="t-body muted">
+          집중 세션 중에 들어오는 알림을 AI가 판단해 잠시 미뤄둡니다.
+        </p>
+      </section>
+
+      <!-- 무엇을 보는지 / 안 보는지 -->
+      <section class="pad mt-8">
+        <div class="list">
+          <div class="list-row">
+            <span style="color:var(--success)">✓</span>
+            <span class="t-body-sm list-row__label">
+              확인하는 것
+              <small>앱 이름, 사용 시간, 알림을 보낸 앱 이름</small>
+            </span>
+          </div>
+          <div class="list-row">
+            <span class="muted3">✕</span>
+            <span class="t-body-sm list-row__label">
+              확인하지 않는 것
+              <small>메시지 내용, 게시물 내용, 대화 상대</small>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 확정 문구 (DESIGN.md §7) -->
+      <section class="pad mt-6">
+        <div class="ai-card">
+          <span class="badge badge--ai t-micro">AI 처리 방식</span>
+          <p class="t-body ai-card__body" style="margin-bottom:0">
+            AI는 어떤 앱을 얼마나 사용했는지, 알림을 보낸 앱 이름만 확인하며
+            메시지·게시물 내용은 읽지 않습니다
+          </p>
+        </div>
+      </section>
+
+      <section class="pad mt-6">
+        <p class="t-caption muted3">
+          거부해도 앱은 그대로 사용할 수 있어요. 차단 기능만 꺼지고,
+          마이페이지에서 언제든 다시 켤 수 있습니다.
+        </p>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">권한 허용하기</button>
+      <button class="btn btn--text btn--block mt-2">나중에 할게요</button>
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>차단 오버레이</b><span>집중 모드</span></div>
+  <div class="phone" data-mode="focus">
+
+    <!--
+      전면 오버레이. 실제로는 OS 위에 뜨는 시스템 오버레이다.
+      경고가 아니라 안내다 — 빨강·느낌표·자물쇠를 쓰지 않는다 (DESIGN.md §7).
+      버튼 3개(계속 집중 / 5분만 허용 / 목록에서 제외)를 동등한 무게로 둔다.
+    -->
+    <div class="overlay">
+
+      <!-- 1. 차단 사유 -->
+      <div>
+        <div class="appcard__icon" style="margin:0 auto var(--space-4)">🎮</div>
+        <p class="t-h2 mb-3">지금은 열지 않기로 했어요</p>
+        <p class="t-body overlay__reason">게임 카테고리로 분류된 앱입니다</p>
+      </div>
+
+      <!-- 2. 남은 집중 세션 시간 -->
+      <div>
+        <span class="t-caption overlay__label">남은 집중 시간</span>
+        <p class="t-h1 num overlay__time mt-2">1:05:47</p>
+      </div>
+
+      <!-- 3 · 4. 행동 -->
+      <div class="overlay__acts">
+        <button class="btn btn--primary btn--block">계속 집중하기</button>
+        <button class="btn btn--outline btn--block">5분만 허용</button>
+        <button class="btn btn--text btn--block">차단 목록에서 제외</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>차단 앱 관리</b><span>설정</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">차단 앱 관리</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <!-- AI 판단 기준 진입점 (agy A-4) -->
+      <section class="pad mb-6">
+        <button class="btn btn--quiet btn--block" style="justify-content:space-between">
+          <span class="t-body-sm">AI가 무엇을 기준으로 판단하나요?</span>
+          <span class="muted3">›</span>
+        </button>
+      </section>
+
+      <section class="pad">
+        <h2 class="t-caption muted mb-3">AI 추천 차단 앱</h2>
+
+        <div class="stack" style="gap:var(--space-3)">
+
+          <div class="appcard">
+            <div class="appcard__icon">🎮</div>
+            <div>
+              <b class="t-h3 appcard__name">리그 오브 레전드</b>
+              <button class="appcard__tag">게임</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+
+          <div class="appcard">
+            <div class="appcard__icon">📷</div>
+            <div>
+              <b class="t-h3 appcard__name">인스타그램</b>
+              <button class="appcard__tag">SNS</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+
+          <!-- 사용자가 카테고리를 고친 항목 — 테두리로 즉시 구분 -->
+          <div class="appcard" data-changed="true">
+            <div class="appcard__icon">💬</div>
+            <div>
+              <b class="t-h3 appcard__name">슬랙</b>
+              <button class="appcard__tag" style="background:var(--accent-weak); color:var(--accent)">업무 도구</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="false" aria-label="차단"></button>
+          </div>
+
+          <div class="appcard">
+            <div class="appcard__icon">▶️</div>
+            <div>
+              <b class="t-h3 appcard__name">유튜브</b>
+              <button class="appcard__tag">영상</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 사용자 수정 반영 안내 (확정 문구) -->
+      <section class="pad mt-6">
+        <div class="card card--quiet" style="display:flex; gap:var(--space-2); align-items:center">
+          <span style="color:var(--accent)">✓</span>
+          <span class="t-caption muted">이 선택을 기억할게요</span>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <!-- 하단 고정 저장 버튼 (명세: 화면 하단에 고정) -->
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">저장하기</button>
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>왜 추천됐나요?</b><span>바텀시트</span></div>
+  <div class="phone">
+
+    <!-- 뒤에 깔린 차단 앱 관리 화면 -->
+    <div class="screen">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">차단 앱 관리</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <section class="pad">
+        <div class="stack" style="gap:var(--space-3)">
+          <div class="appcard">
+            <div class="appcard__icon">🎮</div>
+            <div>
+              <b class="t-h3 appcard__name">리그 오브 레전드</b>
+              <button class="appcard__tag">게임</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+          <div class="appcard">
+            <div class="appcard__icon">📷</div>
+            <div>
+              <b class="t-h3 appcard__name">인스타그램</b>
+              <button class="appcard__tag">SNS</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <!--
+      정량적 수치와 함께 근거를 제시한다 (명세: '왜 추천됐나요?' → 바텀시트).
+      AI가 만든 것에는 항상 근거 보기 진입점이 붙는다 (DESIGN.md §7 원칙 1).
+    -->
+    <div class="bottom-sheet" role="dialog" aria-label="추천 근거">
+      <div class="bottom-sheet__handle"></div>
+
+      <span class="badge badge--ai t-micro">AI 판단 근거</span>
+      <h2 class="t-h2 mt-4 mb-3">인스타그램을 추천한 이유</h2>
+      <p class="t-body muted mb-6">최근 2주간 집중 세션 기록을 분석했어요.</p>
+
+      <div class="stack" style="gap:var(--space-3)">
+        <div class="card card--quiet">
+          <span class="t-caption muted">집중 세션 중 사용 빈도</span>
+          <p class="t-h2 mt-2 num">평균 8회</p>
+          <p class="t-caption muted3 mt-2">세션 1회당 기준</p>
+        </div>
+        <div class="card card--quiet">
+          <span class="t-caption muted">세션 이탈 직전 진입</span>
+          <p class="t-h2 mt-2 num">43%</p>
+          <p class="t-caption muted3 mt-2">중단된 세션 중 이 앱을 연 직후 발생한 비율</p>
+        </div>
+        <div class="card card--quiet">
+          <span class="t-caption muted">현재 목표와의 연관성</span>
+          <p class="t-h2 mt-2">낮음</p>
+          <p class="t-caption muted3 mt-2">'정보처리기사 필기 합격'과 관련 없는 도메인</p>
+        </div>
+      </div>
+
+      <div class="mt-6" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2)">
+        <button class="btn btn--quiet">추천 해제</button>
+        <button class="btn btn--primary">차단 유지</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>통계</b><span>메인</span></div>
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">통계</h1></header>
+
+      <!-- 갱신 시각 — 배치 집계 구조라 반드시 표기 (agy A-1) -->
+      <p class="pad t-caption muted3 mb-4">마지막 업데이트: 오늘 오전 6시</p>
+
+      <!-- 주간 / 월간 -->
+      <section class="pad mb-6">
+        <div class="segment" role="tablist">
+          <button class="segment__item" role="tab" aria-selected="true">주간</button>
+          <button class="segment__item" role="tab" aria-selected="false">월간</button>
+        </div>
+      </section>
+
+      <!-- 요일별 막대그래프 -->
+      <section class="pad mb-8">
+        <div class="bars">
+          <div class="bars__col"><i class="bars__bar" style="height:46%"></i><span class="t-micro bars__label">월</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:72%"></i><span class="t-micro bars__label">화</span></div>
+          <div class="bars__col" data-today="true"><i class="bars__bar" style="height:88%"></i><span class="t-micro bars__label">수</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:34%"></i><span class="t-micro bars__label">목</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:60%"></i><span class="t-micro bars__label">금</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:18%"></i><span class="t-micro bars__label">토</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:0%"></i><span class="t-micro bars__label">일</span></div>
+        </div>
+      </section>
+
+      <!-- 2×2 스탯 타일 -->
+      <section class="pad mb-8">
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">총 학습시간</span>
+            <span class="t-h2 num stat-tile__value">14시간 20분</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">계획 실행률</span>
+            <span class="t-h2 num stat-tile__value">82%</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">방해요소 차단</span>
+            <span class="t-h2 num stat-tile__value">37회</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">평균 집중 유지</span>
+            <span class="t-h2 num stat-tile__value">41분</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 최하단 AI 인사이트 (agy A-7) -->
+      <section class="pad">
+        <div class="ai-card">
+          <span class="badge badge--ai t-micro">AI 인사이트</span>
+          <p class="t-body ai-card__body">
+            오전 10시–12시에 집중 유지 시간이 가장 길었어요. 목요일에만 유독
+            세션이 짧게 끊기는데, 이 시간대 일정을 오전으로 옮겨보면 어떨까요?
+          </p>
+          <button class="btn btn--quiet">다음 계획에 반영하기</button>
+        </div>
+      </section>
+
+      <!-- 5분 예외 허용 사용 횟수 (agy B-3: 남용 방지) -->
+      <section class="pad mt-6">
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">'5분만 허용' 사용</span>
+            <span class="t-caption list-row__value num">이번 주 6회</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>통계 — 빈 상태</b><span>빈 상태</span></div>
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">통계</h1></header>
+      <p class="pad t-caption muted3 mb-4">집계 중…</p>
+
+      <section class="pad mb-6">
+        <div class="segment" role="tablist">
+          <button class="segment__item" role="tab" aria-selected="true">주간</button>
+          <button class="segment__item" role="tab" aria-selected="false">월간</button>
+        </div>
+      </section>
+
+      <!--
+        데이터가 없는 첫 사용 시 그래프 대신 빈 상태 문구 (agy A-6, 확정 문구).
+      -->
+      <section class="empty-state" style="padding-block:var(--space-10)">
+        <p class="t-body">아직 기록된 학습 데이터가 없어요.<br>첫 타이머 세션을 시작해보세요</p>
+        <button class="btn btn--primary">타이머 시작하기</button>
+      </section>
+
+      <!-- 집계가 진행 중일 때는 통계 카드 자리에 스켈레톤 (agy A-1) -->
+      <section class="pad mb-8">
+        <h2 class="t-caption muted mb-3">참고 · 집계 진행 중</h2>
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:58%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:80%"></div>
+          </div>
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:52%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:46%"></div>
+          </div>
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:64%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:40%"></div>
+          </div>
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:60%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:52%"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 패턴 분석 데이터 부족 (확정 문구) -->
+      <section class="pad">
+        <h2 class="t-caption muted mb-3">참고 · 데이터 부족</h2>
+        <div class="card card--quiet">
+          <p class="t-body-sm muted">아직 패턴을 분석하기엔 데이터가 부족해요 (앞으로 6일 더 필요)</p>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>마이페이지</b><span>메인</span></div>
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">마이페이지</h1></header>
+
+      <!-- ① 프로필 영역 — 스트릭 배지를 우측 상단에 강조 -->
+      <section class="pad mb-6">
+        <div style="display:flex; align-items:center; gap:var(--space-4)">
+          <div style="width:64px; height:64px; border-radius:var(--r-full);
+                      background:var(--surface-2); border:1px solid var(--border); flex-shrink:0"></div>
+          <div style="flex:1">
+            <p class="t-h2">김창희</p>
+            <p class="t-caption muted3 mt-2 num">2026년 7월 21일 가입</p>
+          </div>
+          <div style="text-align:center">
+            <div class="t-h2 num" style="color:var(--warn)">🔥 12</div>
+            <div class="t-micro muted3 mt-2">일 연속</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ② 목표 요약 카드 — 탭하면 계획 페이지로 -->
+      <section class="pad mb-6">
+        <div class="goal-card" role="button" tabindex="0">
+          <div class="goal-card__top">
+            <span class="t-h3 goal-card__name">정보처리기사 필기 합격</span>
+            <span class="t-caption goal-card__dday num">D-27</span>
+          </div>
+          <div class="goal-card__rate">
+            <strong class="t-h1 num">68</strong><span class="t-h3">%</span>
+            <span class="t-caption" style="margin-left:auto">계획 보기 ›</span>
+          </div>
+          <div class="gauge"><i style="width:68%"></i></div>
+        </div>
+      </section>
+
+      <!-- ③ 간단 통계 미리보기 — 7개 얇은 스파크라인 -->
+      <section class="pad mb-8">
+        <div class="card" role="button" tabindex="0">
+          <div style="display:flex; align-items:baseline; justify-content:space-between">
+            <span class="t-caption muted">이번 주</span>
+            <span class="t-caption muted3">통계 보기 ›</span>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:var(--space-4)" class="mt-2 mb-4">
+            <span class="t-h2 num">14시간 20분</span>
+            <span class="t-caption muted3 num">실행률 82%</span>
+          </div>
+          <div class="spark">
+            <i style="height:46%"></i><i style="height:72%"></i><i style="height:88%" data-today="true"></i>
+            <i style="height:34%"></i><i style="height:60%"></i><i style="height:18%"></i><i style="height:4%"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- ④ 설정 메뉴 리스트 (명세 순서 그대로) -->
+      <section class="pad">
+        <h2 class="t-caption muted mb-3">설정</h2>
+        <div class="list">
+          <button class="list-row">
+            <span class="t-body list-row__label">목표 재설정</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">알림 설정</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">차단 앱 관리</span>
+            <span class="t-caption list-row__value num">12개</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">계정 정보 수정</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">내 데이터 보기
+              <small>원본 세션 기록 열람</small>
+            </span>
+            <span class="list-row__chev">›</span>
+          </button>
+        </div>
+
+        <!-- 로그아웃 — 확인창 없이 즉시 처리 -->
+        <div class="list mt-4">
+          <button class="list-row">
+            <span class="t-body list-row__label">로그아웃</span>
+          </button>
+        </div>
+
+        <!-- 회원탈퇴 — 최하단 텍스트 링크 -->
+        <div class="mt-6" style="text-align:center">
+          <button class="btn btn--text t-caption muted3">회원탈퇴</button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>알림 설정</b><span>설정</span></div>
+  <div class="phone">
+    <div class="screen">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">알림 설정</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <!-- 일정 알림/리마인더 (agy B-5) -->
+      <section class="pad mb-6">
+        <h2 class="t-caption muted mb-3">일정 알림</h2>
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body list-row__label">
+              시작 전 알림
+              <small>계획된 일정이 시작되기 전에 알려드려요</small>
+            </span>
+            <button class="switch" role="switch" aria-checked="true" aria-label="시작 전 알림"></button>
+          </div>
+        </div>
+
+        <div class="chip-row mt-4">
+          <button class="chip">5분 전</button>
+          <button class="chip" aria-selected="true">10분 전</button>
+          <button class="chip">15분 전</button>
+          <button class="chip">30분 전</button>
+        </div>
+
+        <div class="card card--quiet mt-4">
+          <span class="t-caption muted3">미리보기</span>
+          <p class="t-body-sm mt-2">10분 후 '기출문제 풀이'가 시작돼요</p>
+        </div>
+      </section>
+
+      <!-- 차단된 알림 목록 (agy A-5) -->
+      <section class="pad">
+        <div style="display:flex; align-items:baseline; justify-content:space-between" class="mb-3">
+          <h2 class="t-caption muted">차단된 알림</h2>
+          <span class="t-caption muted3 num">오늘 9건</span>
+        </div>
+
+        <!-- 발신 앱명과 차단 시각만 표시. 알림 내용은 표시하지 않는다 -->
+        <div class="list">
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">📷</span>
+            <span class="t-body-sm list-row__label">인스타그램</span>
+            <span class="t-caption list-row__value num">10:24</span>
+          </div>
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">🎮</span>
+            <span class="t-body-sm list-row__label">리그 오브 레전드</span>
+            <span class="t-caption list-row__value num">10:41</span>
+          </div>
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">💬</span>
+            <span class="t-body-sm list-row__label">슬랙</span>
+            <span class="t-caption list-row__value num">11:02</span>
+          </div>
+        </div>
+
+        <p class="t-caption muted3 mt-3">알림 내용은 저장하지 않습니다. 앱 이름과 시각만 남아요.</p>
+      </section>
+
+      <!-- 오차단 예외 처리 -->
+      <section class="pad mt-6 mb-8">
+        <h2 class="t-caption muted mb-3">항상 허용할 앱</h2>
+        <div class="list">
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">💬</span>
+            <span class="t-body-sm list-row__label">슬랙</span>
+            <button class="switch" role="switch" aria-checked="true" aria-label="항상 허용"></button>
+          </div>
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">📞</span>
+            <span class="t-body-sm list-row__label">전화</span>
+            <button class="switch" role="switch" aria-checked="true" aria-label="항상 허용"></button>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>로그인</b><span>인증</span></div>
+  <div class="phone">
+    <div class="screen">
+
+      <header class="appbar"></header>
+
+      <section class="pad mt-8 mb-8">
+        <div style="width:48px; height:48px; border-radius:var(--r-md);
+                    background:var(--accent)" class="mb-6"></div>
+        <h1 class="t-h1">다시 오셨네요</h1>
+      </section>
+
+      <!-- 아이디·비밀번호 + 로그인 버튼 -->
+      <section class="pad">
+        <label class="field">
+          <span class="t-caption field__label">아이디</span>
+          <input class="field__input" placeholder="아이디를 입력하세요">
+        </label>
+        <label class="field">
+          <span class="t-caption field__label">비밀번호</span>
+          <input class="field__input" type="password" placeholder="비밀번호를 입력하세요">
+          <!-- 아이디·비밀번호 중 무엇이 틀렸는지는 구분하지 않는다 -->
+          <span class="t-caption field__error">아이디 또는 비밀번호가 올바르지 않습니다</span>
+        </label>
+
+        <button class="btn btn--primary btn--block mt-6">로그인</button>
+
+        <!-- 자동 로그인 체크박스 -->
+        <label class="mt-4" style="display:flex; align-items:center; gap:var(--space-2); cursor:pointer">
+          <span style="width:20px; height:20px; border-radius:var(--r-sm);
+                       background:var(--accent); display:grid; place-items:center; color:#fff; font-size:12px">✓</span>
+          <span class="t-body-sm muted">자동 로그인</span>
+        </label>
+      </section>
+
+      <!-- 소셜 로그인 3개 -->
+      <section class="pad mt-8">
+        <div style="display:flex; align-items:center; gap:var(--space-3)" class="mb-4">
+          <i style="flex:1; height:1px; background:var(--border)"></i>
+          <span class="t-caption muted3">간편 로그인</span>
+          <i style="flex:1; height:1px; background:var(--border)"></i>
+        </div>
+        <button class="social social--kakao"><i class="social__mark" style="background:#191600"></i>카카오로 계속하기</button>
+        <button class="social social--naver"><i class="social__mark" style="background:#fff"></i>네이버로 계속하기</button>
+        <button class="social social--google"><i class="social__mark" style="background:var(--surface-2)"></i>구글로 계속하기</button>
+      </section>
+
+      <!-- 아이디 찾기 · 비밀번호 재설정 (전화번호 인증 기반) -->
+      <section class="pad mt-6 mb-8" style="text-align:center">
+        <button class="btn btn--text t-caption">아이디 찾기</button>
+        <span class="t-caption muted3">·</span>
+        <button class="btn btn--text t-caption">비밀번호 재설정</button>
+        <p class="t-caption muted3 mt-2">가입 시 인증한 전화번호로 확인합니다</p>
+      </section>
+
+    </div><!-- /screen -->
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>회원가입 1</b><span>4단계</span></div>
+  <div class="phone">
+    <div class="screen">
+      <header class="appbar"></header>
+
+      <section class="pad mt-8 mb-8">
+        <div style="width:48px; height:48px; border-radius:var(--r-md);
+                    background:var(--accent)" class="mb-6"></div>
+        <h1 class="t-h1 mb-3">시작해볼까요</h1>
+        <p class="t-body muted">3분이면 첫 계획을 받을 수 있어요.</p>
+      </section>
+
+      <section class="pad mt-8">
+        <button class="social social--kakao"><i class="social__mark" style="background:#191600"></i>카카오로 시작하기</button>
+        <button class="social social--naver"><i class="social__mark" style="background:#fff"></i>네이버로 시작하기</button>
+        <button class="social social--google"><i class="social__mark" style="background:var(--surface-2)"></i>구글로 시작하기</button>
+      </section>
+
+      <section class="pad mt-8" style="text-align:center">
+        <button class="btn btn--text t-body-sm">전화번호로 가입하기</button>
+      </section>
+
+      <section class="pad mt-8" style="text-align:center">
+        <span class="t-caption muted3">이미 계정이 있나요?</span>
+        <button class="btn btn--text t-caption" style="color:var(--accent)">로그인</button>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>회원가입 2</b><span>4단계</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps"><i data-on="true"></i><i></i><i></i><i></i></div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-3">전화번호를<br>입력해주세요</h1>
+        <p class="t-body muted">본인 확인에만 사용하고 광고에는 쓰지 않아요.</p>
+      </section>
+
+      <section class="pad mt-8">
+        <label class="field">
+          <span class="t-caption field__label">전화번호</span>
+          <input class="field__input num" value="010-1234-5678">
+        </label>
+
+        <div class="field">
+          <div style="display:flex; align-items:baseline; justify-content:space-between" class="mb-2">
+            <span class="t-caption field__label" style="margin:0">인증번호</span>
+            <span class="t-caption num" style="color:var(--accent)">02:47</span>
+          </div>
+          <div class="otp">
+            <input class="num" value="4"><input class="num" value="9"><input class="num" value="2">
+            <input class="num" value=""><input class="num" value=""><input class="num" value="">
+          </div>
+          <button class="btn btn--text t-caption mt-2" style="padding:0">인증번호 재전송</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block" disabled>다음</button>
+    </div>
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>회원가입 3</b><span>4단계</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps"><i data-on="true"></i><i data-on="true"></i><i></i><i></i></div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-8">약관에 동의해주세요</h1>
+
+        <div class="card" style="border-color:var(--accent); background:var(--accent-weak)">
+          <label style="display:flex; align-items:center; gap:var(--space-3); cursor:pointer">
+            <span style="width:22px; height:22px; border-radius:var(--r-full);
+                         background:var(--accent); display:grid; place-items:center; color:#fff; font-size:12px">✓</span>
+            <span class="t-h3">전체 동의</span>
+          </label>
+        </div>
+
+        <div class="list mt-4">
+          <div class="list-row">
+            <span style="color:var(--accent)">✓</span>
+            <span class="t-body-sm list-row__label">
+              <b style="color:var(--accent)">[필수]</b> 서비스 이용약관
+            </span>
+            <span class="list-row__chev">›</span>
+          </div>
+          <div class="list-row">
+            <span style="color:var(--accent)">✓</span>
+            <span class="t-body-sm list-row__label">
+              <b style="color:var(--accent)">[필수]</b> 개인정보 처리방침
+            </span>
+            <span class="list-row__chev">›</span>
+          </div>
+          <div class="list-row">
+            <span class="muted3">✓</span>
+            <span class="t-body-sm list-row__label muted3">
+              [선택] 마케팅 정보 수신
+            </span>
+            <span class="list-row__chev">›</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">다음</button>
+    </div>
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>회원가입 4</b><span>4단계</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps"><i data-on="true"></i><i data-on="true"></i><i data-on="true"></i><i data-on="true"></i></div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-8">계정을 만들어요</h1>
+
+        <div class="field">
+          <span class="t-caption field__label">아이디</span>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:var(--space-2)">
+            <input class="field__input" value="changhee">
+            <button class="btn btn--outline" style="height:52px">중복 확인</button>
+          </div>
+          <span class="t-caption field__help" style="color:var(--success)">사용할 수 있는 아이디입니다</span>
+        </div>
+
+        <label class="field">
+          <span class="t-caption field__label">비밀번호</span>
+          <input class="field__input" type="password" value="········">
+          <span class="t-caption field__help">영문·숫자 포함 8자 이상</span>
+        </label>
+
+        <label class="field">
+          <span class="t-caption field__label">닉네임</span>
+          <input class="field__input" value="창희">
+          <span class="t-caption field__help">2~10자, 중복 불가</span>
+        </label>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">가입 완료</button>
+    </div>
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>회원탈퇴 1</b><span>2단계</span></div>
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">회원탈퇴</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <section class="pad mt-6">
+        <h2 class="t-h2 mb-4">정말 떠나시나요?</h2>
+
+        <!-- 확정 문구 (DESIGN.md §7) -->
+        <div class="card" style="border-color:var(--danger)">
+          <p class="t-body" style="color:var(--danger)">
+            탈퇴 시 집중 기록과 통계가 모두 삭제되며 복구할 수 없습니다
+          </p>
+        </div>
+
+        <div class="list mt-4">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">사라지는 것</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted">누적 학습 기록</span>
+            <span class="t-caption list-row__value num">34시간</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted">연속 학습일</span>
+            <span class="t-caption list-row__value num">12일</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted">진행 중인 목표</span>
+            <span class="t-caption list-row__value">1개</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pad mt-8">
+        <label class="field">
+          <span class="t-caption field__label">본인 확인을 위해 비밀번호를 입력하세요</span>
+          <input class="field__input" type="password" placeholder="비밀번호">
+        </label>
+        <p class="t-caption muted3 mt-3">
+          소셜 계정으로 가입하신 경우 해당 플랫폼 재인증으로 대체됩니다.
+        </p>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--danger btn--block">탈퇴하기</button>
+      <button class="btn btn--text btn--block mt-2">계속 사용할게요</button>
+    </div>
+  </div>
+</div>
+<div class="cell">
+  <div class="cell__label"><b>회원탈퇴 2</b><span>2단계</span></div>
+  <div class="phone">
+    <div class="screen">
+      <header class="appbar">
+        <h1 class="t-h3 appbar__title">회원탈퇴</h1>
+      </header>
+      <section class="pad mt-6">
+        <h2 class="t-h2 mb-4">정말 떠나시나요?</h2>
+        <div class="card" style="border-color:var(--danger)">
+          <p class="t-body" style="color:var(--danger)">
+            탈퇴 시 집중 기록과 통계가 모두 삭제되며 복구할 수 없습니다
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <div class="dialog" role="alertdialog" aria-label="탈퇴 최종 확인">
+      <h2 class="t-h2 dialog__title">마지막 확인이에요</h2>
+      <p class="t-body dialog__body">
+        확인을 누르면 계정과 모든 데이터가 <b>즉시 삭제</b>됩니다.<br>되돌릴 수 없어요.
+      </p>
+      <div class="dialog__acts">
+        <button class="btn btn--quiet">취소</button>
+        <button class="btn btn--danger">탈퇴</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>

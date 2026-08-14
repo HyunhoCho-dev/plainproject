@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>화면 목록 — 집중 지원 앱 프로토타입</title>
-  <link rel="stylesheet" href="tokens.css">
-  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="shared/components.css">
   <style>
     .wrap { max-width: 960px; margin: 0 auto; padding: var(--space-12) var(--space-6); }
     .grid {
@@ -42,50 +42,57 @@
 
   <span class="badge badge--ai t-micro">HTML 프로토타입</span>
   <h1 class="t-h1 mt-4 mb-3">집중 지원 앱 — 화면 목록</h1>
-  <p class="t-body muted">
-    모든 화면은 <code>DESIGN.md</code>의 토큰과 컴포넌트만 사용합니다.
-    색·간격을 바꾸려면 <code>tokens.css</code>를 고치면 전 화면에 반영됩니다.
+  <p class="t-body muted mb-6">
+    모든 화면은 같은 폴더의 <a href="DESIGN.md" style="color:var(--accent)"><code>DESIGN.md</code></a>에
+    정의된 토큰과 컴포넌트만 사용합니다.
+    색·간격을 바꾸려면 <code>shared/tokens.css</code>를 고치면 전 화면에 반영됩니다.
   </p>
+
+  <a class="tile" href="all.html" style="border-color:var(--ai); background:var(--ai-weak)">
+    <b>📄 전체 화면 한 장으로 보기</b>
+    <span>모바일 25프레임을 한 페이지에 나열 · Figma 변환용</span>
+    <em style="background:var(--surface); color:var(--ai)">한 번에 가져오기</em>
+  </a>
 
   <h2 class="t-h2">온보딩 · 목표 입력</h2>
   <div class="grid">
-    <a class="tile" href="goal-time.html"><b>목표 시간 입력</b><span>스테퍼 · 빠른 선택 칩</span><em>1/3</em></a>
-    <a class="tile" href="goal-level.html"><b>현재 수준 입력</b><span>초급/중급/고급 · 건너뛰기</span><em>2/3</em></a>
-    <a class="tile" href="goal-content.html"><b>목표 내용 입력</b><span>텍스트 영역 · 예시 문구</span><em>3/3</em></a>
-    <a class="tile" href="plan-loading.html"><b>AI 분석 중</b><span>스켈레톤 · 진행 단계</span><em>로딩</em></a>
-    <a class="tile" href="plan-result.html"><b>계획 생성 결과</b><span>분석 카드 3 + AI 처방</span><em>결과</em></a>
+    <a class="tile" href="mobile/goal-time.html"><b>목표 시간 입력</b><span>스테퍼 · 빠른 선택 칩</span><em>1/3</em></a>
+    <a class="tile" href="mobile/goal-level.html"><b>현재 수준 입력</b><span>초급/중급/고급 · 건너뛰기</span><em>2/3</em></a>
+    <a class="tile" href="mobile/goal-content.html"><b>목표 내용 입력</b><span>텍스트 영역 · 예시 문구</span><em>3/3</em></a>
+    <a class="tile" href="mobile/plan-loading.html"><b>AI 분석 중</b><span>스켈레톤 · 진행 단계</span><em>로딩</em></a>
+    <a class="tile" href="mobile/plan-result.html"><b>계획 생성 결과</b><span>분석 카드 3 + AI 처방</span><em>결과</em></a>
   </div>
 
   <h2 class="t-h2">계획 · 실행</h2>
   <div class="grid">
-    <a class="tile" href="home.html"><b>홈 (계획)</b><span>목표 카드 · 날짜 · 계획 블록</span><em>메인</em></a>
-    <a class="tile" href="home-empty.html"><b>홈 — 빈 상태</b><span>CTA 카드 · 오프라인 배너</span><em>빈 상태</em></a>
-    <a class="tile" href="plan-edit.html"><b>계획 편집</b><span>롱프레스 → 바텀시트</span><em>시트</em></a>
-    <a class="tile" href="plan-regenerate.html"><b>계획 재생성 확인</b><span>다이얼로그</span><em>다이얼로그</em></a>
-    <a class="tile" href="timer.html"><b>포커스 타이머</b><span>원형 진행바 · 세션 목록</span><em data-dark="true">집중 모드</em></a>
+    <a class="tile" href="mobile/home.html"><b>홈 (계획)</b><span>목표 카드 · 날짜 · 계획 블록</span><em>메인</em></a>
+    <a class="tile" href="mobile/home-empty.html"><b>홈 — 빈 상태</b><span>CTA 카드 · 오프라인 배너</span><em>빈 상태</em></a>
+    <a class="tile" href="mobile/plan-edit.html"><b>계획 편집</b><span>롱프레스 → 바텀시트</span><em>시트</em></a>
+    <a class="tile" href="mobile/plan-regenerate.html"><b>계획 재생성 확인</b><span>다이얼로그</span><em>다이얼로그</em></a>
+    <a class="tile" href="mobile/timer.html"><b>포커스 타이머</b><span>원형 진행바 · 세션 목록</span><em data-dark="true">집중 모드</em></a>
   </div>
 
   <h2 class="t-h2">방해요소 차단</h2>
   <div class="grid">
-    <a class="tile" href="notify-permission.html"><b>알림 권한 동의</b><span>확인하는 것 / 안 하는 것</span><em>최초 1회</em></a>
-    <a class="tile" href="blocked.html"><b>차단 오버레이</b><span>사유 · 5분 허용 · 제외</span><em data-dark="true">집중 모드</em></a>
-    <a class="tile" href="blocked-apps.html"><b>차단 앱 관리</b><span>카테고리 태그 · 토글</span><em>설정</em></a>
-    <a class="tile" href="why-recommended.html"><b>왜 추천됐나요?</b><span>정량 근거 바텀시트</span><em>시트</em></a>
+    <a class="tile" href="mobile/notify-permission.html"><b>알림 권한 동의</b><span>확인하는 것 / 안 하는 것</span><em>최초 1회</em></a>
+    <a class="tile" href="mobile/blocked.html"><b>차단 오버레이</b><span>사유 · 5분 허용 · 제외</span><em data-dark="true">집중 모드</em></a>
+    <a class="tile" href="mobile/blocked-apps.html"><b>차단 앱 관리</b><span>카테고리 태그 · 토글</span><em>설정</em></a>
+    <a class="tile" href="mobile/why-recommended.html"><b>왜 추천됐나요?</b><span>정량 근거 바텀시트</span><em>시트</em></a>
   </div>
 
   <h2 class="t-h2">통계 · 마이페이지</h2>
   <div class="grid">
-    <a class="tile" href="stats.html"><b>통계</b><span>막대그래프 · 2×2 타일 · AI</span><em>메인</em></a>
-    <a class="tile" href="stats-empty.html"><b>통계 — 빈 상태</b><span>스켈레톤 · 데이터 부족</span><em>빈 상태</em></a>
-    <a class="tile" href="mypage.html"><b>마이페이지</b><span>프로필 · 목표 · 통계 · 설정</span><em>메인</em></a>
-    <a class="tile" href="notify-settings.html"><b>알림 설정</b><span>시작 전 알림 · 차단된 알림</span><em>설정</em></a>
+    <a class="tile" href="mobile/stats.html"><b>통계</b><span>막대그래프 · 2×2 타일 · AI</span><em>메인</em></a>
+    <a class="tile" href="mobile/stats-empty.html"><b>통계 — 빈 상태</b><span>스켈레톤 · 데이터 부족</span><em>빈 상태</em></a>
+    <a class="tile" href="mobile/mypage.html"><b>마이페이지</b><span>프로필 · 목표 · 통계 · 설정</span><em>메인</em></a>
+    <a class="tile" href="mobile/notify-settings.html"><b>알림 설정</b><span>시작 전 알림 · 차단된 알림</span><em>설정</em></a>
   </div>
 
   <h2 class="t-h2">인증</h2>
   <div class="grid">
-    <a class="tile" href="login.html"><b>로그인</b><span>아이디/비번 · 소셜 3종</span><em>인증</em></a>
-    <a class="tile" href="signup.html"><b>회원가입</b><span>진입 · 인증 · 약관 · 계정</span><em>4단계</em></a>
-    <a class="tile" href="withdraw.html"><b>회원탈퇴</b><span>경고 · 본인확인 · 최종 확인</span><em>2단계</em></a>
+    <a class="tile" href="mobile/login.html"><b>로그인</b><span>아이디/비번 · 소셜 3종</span><em>인증</em></a>
+    <a class="tile" href="mobile/signup.html"><b>회원가입</b><span>진입 · 인증 · 약관 · 계정</span><em>4단계</em></a>
+    <a class="tile" href="mobile/withdraw.html"><b>회원탈퇴</b><span>경고 · 본인확인 · 최종 확인</span><em>2단계</em></a>
   </div>
 
   <h2 class="t-h2">PC 웹 버전</h2>
@@ -94,10 +101,10 @@
     모바일 OS에 붙는 기능은 PC 버전을 두지 않습니다. <b>1200px 이상에서 보세요.</b>
   </p>
   <div class="grid">
-    <a class="tile" href="home-desktop.html"><b>홈 (계획)</b><span>사이드바 · 3컬럼</span><em data-pc="true">PC</em></a>
-    <a class="tile" href="stats-desktop.html"><b>통계</b><span>큰 그래프 · 요약 패널</span><em data-pc="true">PC</em></a>
-    <a class="tile" href="mypage-desktop.html"><b>마이페이지</b><span>프로필 · 설정 · 누적 기록</span><em data-pc="true">PC</em></a>
-    <a class="tile" href="plan-result-desktop.html"><b>계획 생성 결과</b><span>중앙 정렬 온보딩</span><em data-pc="true">PC</em></a>
+    <a class="tile" href="desktop/home-desktop.html"><b>홈 (계획)</b><span>사이드바 · 3컬럼</span><em data-pc="true">PC</em></a>
+    <a class="tile" href="desktop/stats-desktop.html"><b>통계</b><span>큰 그래프 · 요약 패널</span><em data-pc="true">PC</em></a>
+    <a class="tile" href="desktop/mypage-desktop.html"><b>마이페이지</b><span>프로필 · 설정 · 누적 기록</span><em data-pc="true">PC</em></a>
+    <a class="tile" href="desktop/plan-result-desktop.html"><b>계획 생성 결과</b><span>중앙 정렬 온보딩</span><em data-pc="true">PC</em></a>
   </div>
 
 </div>
