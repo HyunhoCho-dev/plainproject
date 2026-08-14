@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>회원탈퇴 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage" style="flex-wrap:wrap; gap:var(--space-8)">
+
+  <!-- ① 경고 + 본인확인 (일반 계정: 비밀번호 재입력) -->
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">회원탈퇴</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <section class="pad mt-6">
+        <h2 class="t-h2 mb-4">정말 떠나시나요?</h2>
+
+        <!-- 확정 문구 (DESIGN.md §7) -->
+        <div class="card" style="border-color:var(--danger)">
+          <p class="t-body" style="color:var(--danger)">
+            탈퇴 시 집중 기록과 통계가 모두 삭제되며 복구할 수 없습니다
+          </p>
+        </div>
+
+        <div class="list mt-4">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">사라지는 것</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted">누적 학습 기록</span>
+            <span class="t-caption list-row__value num">34시간</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted">연속 학습일</span>
+            <span class="t-caption list-row__value num">12일</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted">진행 중인 목표</span>
+            <span class="t-caption list-row__value">1개</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pad mt-8">
+        <label class="field">
+          <span class="t-caption field__label">본인 확인을 위해 비밀번호를 입력하세요</span>
+          <input class="field__input" type="password" placeholder="비밀번호">
+        </label>
+        <p class="t-caption muted3 mt-3">
+          소셜 계정으로 가입하신 경우 해당 플랫폼 재인증으로 대체됩니다.
+        </p>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--danger btn--block">탈퇴하기</button>
+      <button class="btn btn--text btn--block mt-2">계속 사용할게요</button>
+    </div>
+  </div>
+
+  <!-- ② 최종 확인 다이얼로그 — 한 번 더 -->
+  <div class="phone">
+    <div class="screen">
+      <header class="appbar">
+        <h1 class="t-h3 appbar__title">회원탈퇴</h1>
+      </header>
+      <section class="pad mt-6">
+        <h2 class="t-h2 mb-4">정말 떠나시나요?</h2>
+        <div class="card" style="border-color:var(--danger)">
+          <p class="t-body" style="color:var(--danger)">
+            탈퇴 시 집중 기록과 통계가 모두 삭제되며 복구할 수 없습니다
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <div class="dialog" role="alertdialog" aria-label="탈퇴 최종 확인">
+      <h2 class="t-h2 dialog__title">마지막 확인이에요</h2>
+      <p class="t-body dialog__body">
+        확인을 누르면 계정과 모든 데이터가 <b>즉시 삭제</b>됩니다.<br>되돌릴 수 없어요.
+      </p>
+      <div class="dialog__acts">
+        <button class="btn btn--quiet">취소</button>
+        <button class="btn btn--danger">탈퇴</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

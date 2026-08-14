@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>알림 설정 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">알림 설정</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <!-- 일정 알림/리마인더 (agy B-5) -->
+      <section class="pad mb-6">
+        <h2 class="t-caption muted mb-3">일정 알림</h2>
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body list-row__label">
+              시작 전 알림
+              <small>계획된 일정이 시작되기 전에 알려드려요</small>
+            </span>
+            <button class="switch" role="switch" aria-checked="true" aria-label="시작 전 알림"></button>
+          </div>
+        </div>
+
+        <div class="chip-row mt-4">
+          <button class="chip">5분 전</button>
+          <button class="chip" aria-selected="true">10분 전</button>
+          <button class="chip">15분 전</button>
+          <button class="chip">30분 전</button>
+        </div>
+
+        <div class="card card--quiet mt-4">
+          <span class="t-caption muted3">미리보기</span>
+          <p class="t-body-sm mt-2">10분 후 '기출문제 풀이'가 시작돼요</p>
+        </div>
+      </section>
+
+      <!-- 차단된 알림 목록 (agy A-5) -->
+      <section class="pad">
+        <div style="display:flex; align-items:baseline; justify-content:space-between" class="mb-3">
+          <h2 class="t-caption muted">차단된 알림</h2>
+          <span class="t-caption muted3 num">오늘 9건</span>
+        </div>
+
+        <!-- 발신 앱명과 차단 시각만 표시. 알림 내용은 표시하지 않는다 -->
+        <div class="list">
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">📷</span>
+            <span class="t-body-sm list-row__label">인스타그램</span>
+            <span class="t-caption list-row__value num">10:24</span>
+          </div>
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">🎮</span>
+            <span class="t-body-sm list-row__label">리그 오브 레전드</span>
+            <span class="t-caption list-row__value num">10:41</span>
+          </div>
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">💬</span>
+            <span class="t-body-sm list-row__label">슬랙</span>
+            <span class="t-caption list-row__value num">11:02</span>
+          </div>
+        </div>
+
+        <p class="t-caption muted3 mt-3">알림 내용은 저장하지 않습니다. 앱 이름과 시각만 남아요.</p>
+      </section>
+
+      <!-- 오차단 예외 처리 -->
+      <section class="pad mt-6 mb-8">
+        <h2 class="t-caption muted mb-3">항상 허용할 앱</h2>
+        <div class="list">
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">💬</span>
+            <span class="t-body-sm list-row__label">슬랙</span>
+            <button class="switch" role="switch" aria-checked="true" aria-label="항상 허용"></button>
+          </div>
+          <div class="list-row">
+            <span class="appcard__icon" style="width:32px; height:32px; font-size:15px">📞</span>
+            <span class="t-body-sm list-row__label">전화</span>
+            <button class="switch" role="switch" aria-checked="true" aria-label="항상 허용"></button>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

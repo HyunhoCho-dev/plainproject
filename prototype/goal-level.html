@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>현재 수준 입력 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <!-- 입력 부담을 낮추는 건너뛰기 (명세: 선택 사항) -->
+        <button class="btn btn--text" style="padding-inline:var(--space-2)">건너뛰기</button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps">
+          <i data-on="true"></i><i data-on="true"></i><i></i>
+        </div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-3">지금 어느 정도<br>알고 계신가요?</h1>
+        <p class="t-body muted">주관적인 느낌을 객관적인 기준으로 바꾸기 위한 질문입니다.</p>
+      </section>
+
+      <!-- 수준별 명확한 가이드 (명세 확정 문구) -->
+      <section class="pad mt-8">
+        <div class="stack" style="gap:var(--space-3)">
+          <button class="chip-card">
+            <b>초급</b>
+            <span>용어 및 기초 지식 없음</span>
+          </button>
+          <button class="chip-card" aria-selected="true">
+            <b>중급</b>
+            <span>기초 이론 1회독 완료</span>
+          </button>
+          <button class="chip-card">
+            <b>고급</b>
+            <span>기출 풀이 및 실전 대비 단계</span>
+          </button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">다음</button>
+    </div>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>차단 앱 관리 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">차단 앱 관리</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <!-- AI 판단 기준 진입점 (agy A-4) -->
+      <section class="pad mb-6">
+        <button class="btn btn--quiet btn--block" style="justify-content:space-between">
+          <span class="t-body-sm">AI가 무엇을 기준으로 판단하나요?</span>
+          <span class="muted3">›</span>
+        </button>
+      </section>
+
+      <section class="pad">
+        <h2 class="t-caption muted mb-3">AI 추천 차단 앱</h2>
+
+        <div class="stack" style="gap:var(--space-3)">
+
+          <div class="appcard">
+            <div class="appcard__icon">🎮</div>
+            <div>
+              <b class="t-h3 appcard__name">리그 오브 레전드</b>
+              <button class="appcard__tag">게임</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+
+          <div class="appcard">
+            <div class="appcard__icon">📷</div>
+            <div>
+              <b class="t-h3 appcard__name">인스타그램</b>
+              <button class="appcard__tag">SNS</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+
+          <!-- 사용자가 카테고리를 고친 항목 — 테두리로 즉시 구분 -->
+          <div class="appcard" data-changed="true">
+            <div class="appcard__icon">💬</div>
+            <div>
+              <b class="t-h3 appcard__name">슬랙</b>
+              <button class="appcard__tag" style="background:var(--accent-weak); color:var(--accent)">업무 도구</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="false" aria-label="차단"></button>
+          </div>
+
+          <div class="appcard">
+            <div class="appcard__icon">▶️</div>
+            <div>
+              <b class="t-h3 appcard__name">유튜브</b>
+              <button class="appcard__tag">영상</button>
+              <button class="appcard__why">왜 추천됐나요?</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 사용자 수정 반영 안내 (확정 문구) -->
+      <section class="pad mt-6">
+        <div class="card card--quiet" style="display:flex; gap:var(--space-2); align-items:center">
+          <span style="color:var(--accent)">✓</span>
+          <span class="t-caption muted">이 선택을 기억할게요</span>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <!-- 하단 고정 저장 버튼 (명세: 화면 하단에 고정) -->
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">저장하기</button>
+    </div>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마이페이지 · PC — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="desktop.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand"><i class="brand__mark"></i><span>PLAIN</span></div>
+    <nav class="nav" aria-label="주요 메뉴">
+      <button class="nav__item">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span>계획</span>
+      </button>
+      <button class="nav__item">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span>통계</span>
+      </button>
+      <button class="nav__item" aria-current="page">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span>마이페이지</span>
+      </button>
+    </nav>
+    <div class="sidebar__foot">
+      <div class="userchip" role="button" tabindex="0">
+        <i class="userchip__avatar"></i>
+        <span>
+          <b class="t-body-sm userchip__name">김창희</b>
+          <em class="t-micro userchip__streak num" style="font-style:normal">🔥 12일 연속</em>
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <main class="main">
+
+      <header class="topbar"><h1 class="t-h1">마이페이지</h1></header>
+
+      <!-- ① 프로필 -->
+      <section class="card mb-6" style="padding:var(--space-6)">
+        <div style="display:flex; align-items:center; gap:var(--space-5)">
+          <div style="width:72px; height:72px; border-radius:var(--r-full);
+                      background:var(--surface-2); border:1px solid var(--border); flex-shrink:0"></div>
+          <div style="flex:1">
+            <p class="t-h2">김창희</p>
+            <p class="t-caption muted3 mt-2 num">2026년 7월 21일 가입 · 닉네임 창희</p>
+          </div>
+          <div style="text-align:center; padding-inline:var(--space-6)">
+            <div class="t-h1 num" style="color:var(--warn)">🔥 12</div>
+            <div class="t-caption muted3 mt-2">일 연속</div>
+          </div>
+          <button class="btn btn--outline">프로필 수정</button>
+        </div>
+      </section>
+
+      <!-- ② 목표 요약 -->
+      <section class="mb-6">
+        <div class="goal-card goal-card--wide" role="button" tabindex="0">
+          <div>
+            <div class="goal-card__top">
+              <span class="t-h3 goal-card__name">정보처리기사 필기 합격</span>
+              <span class="t-caption goal-card__dday num">D-27</span>
+            </div>
+            <div class="gauge"><i style="width:68%"></i></div>
+          </div>
+          <div class="goal-card__stat">
+            <strong class="t-h1 num">68%</strong>
+            <span class="t-caption">계획 보기 ›</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ④ 설정 -->
+      <section>
+        <h2 class="t-caption muted mb-3">설정</h2>
+        <div class="list">
+          <button class="list-row">
+            <span class="t-body list-row__label">목표 재설정</span><span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">알림 설정</span><span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">차단 앱 관리</span>
+            <span class="t-caption list-row__value num">12개</span><span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">계정 정보 수정</span><span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">내 데이터 보기<small>원본 세션 기록 열람</small></span>
+            <span class="list-row__chev">›</span>
+          </button>
+        </div>
+
+        <div class="list mt-4">
+          <button class="list-row"><span class="t-body list-row__label">로그아웃</span></button>
+        </div>
+
+        <div class="mt-6"><button class="btn btn--text t-caption muted3" style="padding:0">회원탈퇴</button></div>
+      </section>
+
+    </main>
+
+    <aside class="aside">
+      <!-- ③ 간단 통계 미리보기 -->
+      <section class="panel">
+        <h2 class="t-caption panel__title">이번 주</h2>
+        <p class="t-h2 num">14시간 20분</p>
+        <p class="t-caption muted3 num mt-2 mb-4">계획 실행률 82%</p>
+        <div class="spark">
+          <i style="height:46%"></i><i style="height:72%"></i><i style="height:88%" data-today="true"></i>
+          <i style="height:34%"></i><i style="height:60%"></i><i style="height:18%"></i><i style="height:4%"></i>
+        </div>
+        <button class="btn btn--quiet btn--block mt-4">통계 보기</button>
+      </section>
+
+      <section class="panel">
+        <h2 class="t-caption panel__title">누적 기록</h2>
+        <div class="summary">
+          <div class="summary__row">
+            <span class="t-body-sm summary__label">총 학습시간</span>
+            <span class="t-body-sm summary__value num">34시간</span>
+          </div>
+          <div class="summary__row">
+            <span class="t-body-sm summary__label">완료한 세션</span>
+            <span class="t-body-sm summary__value num">61회</span>
+          </div>
+          <div class="summary__row">
+            <span class="t-body-sm summary__label">최장 연속</span>
+            <span class="t-body-sm summary__value num">12일</span>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+  </div>
+</div>
+
+</body>
+</html>

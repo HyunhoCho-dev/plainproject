@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>통계 · PC — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="desktop.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand"><i class="brand__mark"></i><span>PLAIN</span></div>
+    <nav class="nav" aria-label="주요 메뉴">
+      <button class="nav__item">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span>계획</span>
+      </button>
+      <button class="nav__item" aria-current="page">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span>통계</span>
+      </button>
+      <button class="nav__item">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span>마이페이지</span>
+      </button>
+    </nav>
+    <div class="sidebar__foot">
+      <div class="userchip" role="button" tabindex="0">
+        <i class="userchip__avatar"></i>
+        <span>
+          <b class="t-body-sm userchip__name">김창희</b>
+          <em class="t-micro userchip__streak num" style="font-style:normal">🔥 12일 연속</em>
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <main class="main">
+
+      <header class="topbar">
+        <h1 class="t-h1">통계</h1>
+        <div class="segment" role="tablist" style="width:200px">
+          <button class="segment__item" role="tab" aria-selected="true">주간</button>
+          <button class="segment__item" role="tab" aria-selected="false">월간</button>
+        </div>
+      </header>
+
+      <p class="t-caption muted3 mb-6">마지막 업데이트: 오늘 오전 6시</p>
+
+      <section class="card mb-6" style="padding:var(--space-6)">
+        <div class="bars" style="height:200px">
+          <div class="bars__col"><i class="bars__bar" style="height:46%"></i><span class="t-caption bars__label">월</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:72%"></i><span class="t-caption bars__label">화</span></div>
+          <div class="bars__col" data-today="true"><i class="bars__bar" style="height:88%"></i><span class="t-caption bars__label">수</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:34%"></i><span class="t-caption bars__label">목</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:60%"></i><span class="t-caption bars__label">금</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:18%"></i><span class="t-caption bars__label">토</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:0%"></i><span class="t-caption bars__label">일</span></div>
+        </div>
+      </section>
+
+      <section class="mb-6">
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">총 학습시간</span>
+            <span class="t-h2 num stat-tile__value">14시간 20분</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">계획 실행률</span>
+            <span class="t-h2 num stat-tile__value">82%</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">방해요소 차단</span>
+            <span class="t-h2 num stat-tile__value">37회</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">평균 집중 유지</span>
+            <span class="t-h2 num stat-tile__value">41분</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="ai-card">
+          <span class="badge badge--ai t-micro">AI 인사이트</span>
+          <p class="t-body ai-card__body">
+            오전 10시–12시에 집중 유지 시간이 가장 길었어요. 목요일에만 유독
+            세션이 짧게 끊기는데, 이 시간대 일정을 오전으로 옮겨보면 어떨까요?
+          </p>
+          <button class="btn btn--quiet">다음 계획에 반영하기</button>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="aside">
+      <section class="panel">
+        <h2 class="t-caption panel__title">이번 주 요약</h2>
+        <div class="summary">
+          <div class="summary__row">
+            <span class="t-body-sm summary__label">가장 집중한 요일</span>
+            <span class="t-body-sm summary__value">수요일</span>
+          </div>
+          <div class="summary__row">
+            <span class="t-body-sm summary__label">최장 세션</span>
+            <span class="t-body-sm summary__value num">1시간 52분</span>
+          </div>
+          <div class="summary__row">
+            <span class="t-body-sm summary__label">'5분만 허용' 사용</span>
+            <span class="t-body-sm summary__value num">6회</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="t-caption panel__title">목표 진행</h2>
+        <p class="t-h1 num mb-2">68%</p>
+        <div class="gauge mb-3"><i style="width:68%"></i></div>
+        <p class="t-caption muted3 num">정보처리기사 필기 합격 · D-27</p>
+      </section>
+    </aside>
+
+  </div>
+</div>
+
+</body>
+</html>

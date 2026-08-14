@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>목표 내용 입력 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps">
+          <i data-on="true"></i><i data-on="true"></i><i data-on="true"></i>
+        </div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-3">무엇을 이루고<br>싶으신가요?</h1>
+        <p class="t-body muted">구체적으로 쓸수록 계획이 정확해집니다.</p>
+      </section>
+
+      <section class="pad mt-6">
+        <label class="field">
+          <textarea class="field__area"
+            placeholder="예) 10월 정보처리기사 필기 합격하기">정보처리기사 필기 합격하기</textarea>
+          <span class="t-caption field__help">언제까지, 무엇을 — 이 두 가지가 들어가면 좋습니다</span>
+        </label>
+      </section>
+
+      <!-- 예시 문구 제공 (명세: 입력 부담 완화) -->
+      <section class="pad mt-6">
+        <h2 class="t-caption muted mb-3">이렇게 쓴 사람들이 있어요</h2>
+        <div class="stack" style="gap:var(--space-2)">
+          <button class="chip-card"><b class="t-body-sm" style="font-weight:400">3개월 안에 토익 800점 넘기기</b></button>
+          <button class="chip-card"><b class="t-body-sm" style="font-weight:400">기말고사 전공 4과목 A 받기</b></button>
+          <button class="chip-card"><b class="t-body-sm" style="font-weight:400">포트폴리오용 웹앱 1개 완성하기</b></button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">계획 만들기</button>
+    </div>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

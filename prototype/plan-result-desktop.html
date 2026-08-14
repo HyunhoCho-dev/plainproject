@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>계획 생성 결과 · PC — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="desktop.css">
+  <style>
+    /* 온보딩은 사이드바 없이 중앙 정렬 — 목표에만 집중시킨다 */
+    .onboard {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-12) var(--space-6);
+    }
+    .onboard__inner { width: 100%; max-width: 640px; }
+  </style>
+</head>
+<body>
+
+<div class="onboard">
+  <div class="onboard__inner">
+
+    <span class="badge badge--ai t-micro">AI 분석 완료</span>
+    <h1 class="t-h1 mt-4 mb-3">계획이 준비됐어요</h1>
+    <p class="t-body muted mb-8">정보처리기사 필기 합격 · 하루 2.5시간 기준</p>
+
+    <!-- PC는 가로가 넓으니 3개 카드를 나란히 -->
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-3)" class="mb-4">
+      <div class="card">
+        <span class="t-caption muted">예상 달성 기간</span>
+        <p class="t-h2 mt-2 num">약 10주</p>
+      </div>
+      <div class="card">
+        <span class="t-caption muted">주간 추천 시간</span>
+        <p class="t-h2 mt-2 num">주 14시간</p>
+      </div>
+      <div class="card">
+        <span class="t-caption muted">첫 주 집중 영역</span>
+        <p class="t-h2 mt-2">이론 · 개념</p>
+      </div>
+    </div>
+
+    <div class="ai-card mb-8">
+      <span class="badge badge--ai t-micro">AI 처방</span>
+      <p class="t-body ai-card__body">
+        하루 2.5시간이면 넉넉한 편이에요. 다만 마지막 2주는 기출 반복에
+        시간이 몰리니, 초반 4주 동안 개념을 확실히 끝내두는 게 좋습니다.
+      </p>
+      <button class="btn btn--quiet">근거 보기</button>
+    </div>
+
+    <div style="display:flex; gap:var(--space-3)">
+      <button class="btn btn--primary" style="flex:1">계획 확인하러 가기</button>
+      <button class="btn btn--outline">조건 바꾸기</button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

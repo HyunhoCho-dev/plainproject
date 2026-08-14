@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>왜 추천됐나요? (바텀시트) — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+
+    <!-- 뒤에 깔린 차단 앱 관리 화면 -->
+    <div class="screen">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">차단 앱 관리</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <section class="pad">
+        <div class="stack" style="gap:var(--space-3)">
+          <div class="appcard">
+            <div class="appcard__icon">🎮</div>
+            <div>
+              <b class="t-h3 appcard__name">리그 오브 레전드</b>
+              <button class="appcard__tag">게임</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+          <div class="appcard">
+            <div class="appcard__icon">📷</div>
+            <div>
+              <b class="t-h3 appcard__name">인스타그램</b>
+              <button class="appcard__tag">SNS</button>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="차단"></button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <!--
+      정량적 수치와 함께 근거를 제시한다 (명세: '왜 추천됐나요?' → 바텀시트).
+      AI가 만든 것에는 항상 근거 보기 진입점이 붙는다 (DESIGN.md §7 원칙 1).
+    -->
+    <div class="bottom-sheet" role="dialog" aria-label="추천 근거">
+      <div class="bottom-sheet__handle"></div>
+
+      <span class="badge badge--ai t-micro">AI 판단 근거</span>
+      <h2 class="t-h2 mt-4 mb-3">인스타그램을 추천한 이유</h2>
+      <p class="t-body muted mb-6">최근 2주간 집중 세션 기록을 분석했어요.</p>
+
+      <div class="stack" style="gap:var(--space-3)">
+        <div class="card card--quiet">
+          <span class="t-caption muted">집중 세션 중 사용 빈도</span>
+          <p class="t-h2 mt-2 num">평균 8회</p>
+          <p class="t-caption muted3 mt-2">세션 1회당 기준</p>
+        </div>
+        <div class="card card--quiet">
+          <span class="t-caption muted">세션 이탈 직전 진입</span>
+          <p class="t-h2 mt-2 num">43%</p>
+          <p class="t-caption muted3 mt-2">중단된 세션 중 이 앱을 연 직후 발생한 비율</p>
+        </div>
+        <div class="card card--quiet">
+          <span class="t-caption muted">현재 목표와의 연관성</span>
+          <p class="t-h2 mt-2">낮음</p>
+          <p class="t-caption muted3 mt-2">'정보처리기사 필기 합격'과 관련 없는 도메인</p>
+        </div>
+      </div>
+
+      <div class="mt-6" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2)">
+        <button class="btn btn--quiet">추천 해제</button>
+        <button class="btn btn--primary">차단 유지</button>
+      </div>
+    </div>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

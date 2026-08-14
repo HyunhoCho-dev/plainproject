@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko" data-mode="focus">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>차단 오버레이 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+
+    <!--
+      전면 오버레이. 실제로는 OS 위에 뜨는 시스템 오버레이다.
+      경고가 아니라 안내다 — 빨강·느낌표·자물쇠를 쓰지 않는다 (DESIGN.md §7).
+      버튼 3개(계속 집중 / 5분만 허용 / 목록에서 제외)를 동등한 무게로 둔다.
+    -->
+    <div class="overlay">
+
+      <!-- 1. 차단 사유 -->
+      <div>
+        <div class="appcard__icon" style="margin:0 auto var(--space-4)">🎮</div>
+        <p class="t-h2 mb-3">지금은 열지 않기로 했어요</p>
+        <p class="t-body overlay__reason">게임 카테고리로 분류된 앱입니다</p>
+      </div>
+
+      <!-- 2. 남은 집중 세션 시간 -->
+      <div>
+        <span class="t-caption overlay__label">남은 집중 시간</span>
+        <p class="t-h1 num overlay__time mt-2">1:05:47</p>
+      </div>
+
+      <!-- 3 · 4. 행동 -->
+      <div class="overlay__acts">
+        <button class="btn btn--primary btn--block">계속 집중하기</button>
+        <button class="btn btn--outline btn--block">5분만 허용</button>
+        <button class="btn btn--text btn--block">차단 목록에서 제외</button>
+      </div>
+
+    </div>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

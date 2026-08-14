@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>회원가입 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage" style="flex-wrap:wrap; gap:var(--space-8)">
+
+  <!-- ① 진입 — 소셜 3개 우선, 전화번호는 텍스트 링크로 분리 -->
+  <div class="phone">
+    <div class="screen">
+      <header class="appbar"></header>
+
+      <section class="pad mt-8 mb-8">
+        <div style="width:48px; height:48px; border-radius:var(--r-md);
+                    background:var(--accent)" class="mb-6"></div>
+        <h1 class="t-h1 mb-3">시작해볼까요</h1>
+        <p class="t-body muted">3분이면 첫 계획을 받을 수 있어요.</p>
+      </section>
+
+      <section class="pad mt-8">
+        <button class="social social--kakao"><i class="social__mark" style="background:#191600"></i>카카오로 시작하기</button>
+        <button class="social social--naver"><i class="social__mark" style="background:#fff"></i>네이버로 시작하기</button>
+        <button class="social social--google"><i class="social__mark" style="background:var(--surface-2)"></i>구글로 시작하기</button>
+      </section>
+
+      <section class="pad mt-8" style="text-align:center">
+        <button class="btn btn--text t-body-sm">전화번호로 가입하기</button>
+      </section>
+
+      <section class="pad mt-8" style="text-align:center">
+        <span class="t-caption muted3">이미 계정이 있나요?</span>
+        <button class="btn btn--text t-caption" style="color:var(--accent)">로그인</button>
+      </section>
+    </div>
+  </div>
+
+  <!-- ② 전화번호 인증 -->
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps"><i data-on="true"></i><i></i><i></i><i></i></div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-3">전화번호를<br>입력해주세요</h1>
+        <p class="t-body muted">본인 확인에만 사용하고 광고에는 쓰지 않아요.</p>
+      </section>
+
+      <section class="pad mt-8">
+        <label class="field">
+          <span class="t-caption field__label">전화번호</span>
+          <input class="field__input num" value="010-1234-5678">
+        </label>
+
+        <div class="field">
+          <div style="display:flex; align-items:baseline; justify-content:space-between" class="mb-2">
+            <span class="t-caption field__label" style="margin:0">인증번호</span>
+            <span class="t-caption num" style="color:var(--accent)">02:47</span>
+          </div>
+          <div class="otp">
+            <input class="num" value="4"><input class="num" value="9"><input class="num" value="2">
+            <input class="num" value=""><input class="num" value=""><input class="num" value="">
+          </div>
+          <button class="btn btn--text t-caption mt-2" style="padding:0">인증번호 재전송</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block" disabled>다음</button>
+    </div>
+  </div>
+
+  <!-- ③ 약관 동의 — 필수/선택 구분, '전체 동의'가 최상단 -->
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps"><i data-on="true"></i><i data-on="true"></i><i></i><i></i></div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-8">약관에 동의해주세요</h1>
+
+        <div class="card" style="border-color:var(--accent); background:var(--accent-weak)">
+          <label style="display:flex; align-items:center; gap:var(--space-3); cursor:pointer">
+            <span style="width:22px; height:22px; border-radius:var(--r-full);
+                         background:var(--accent); display:grid; place-items:center; color:#fff; font-size:12px">✓</span>
+            <span class="t-h3">전체 동의</span>
+          </label>
+        </div>
+
+        <div class="list mt-4">
+          <div class="list-row">
+            <span style="color:var(--accent)">✓</span>
+            <span class="t-body-sm list-row__label">
+              <b style="color:var(--accent)">[필수]</b> 서비스 이용약관
+            </span>
+            <span class="list-row__chev">›</span>
+          </div>
+          <div class="list-row">
+            <span style="color:var(--accent)">✓</span>
+            <span class="t-body-sm list-row__label">
+              <b style="color:var(--accent)">[필수]</b> 개인정보 처리방침
+            </span>
+            <span class="list-row__chev">›</span>
+          </div>
+          <div class="list-row">
+            <span class="muted3">✓</span>
+            <span class="t-body-sm list-row__label muted3">
+              [선택] 마케팅 정보 수신
+            </span>
+            <span class="list-row__chev">›</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">다음</button>
+    </div>
+  </div>
+
+  <!-- ④ 아이디·비밀번호·닉네임 설정 -->
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pad mb-8">
+        <div class="steps"><i data-on="true"></i><i data-on="true"></i><i data-on="true"></i><i data-on="true"></i></div>
+      </div>
+
+      <section class="pad">
+        <h1 class="t-h1 mb-8">계정을 만들어요</h1>
+
+        <div class="field">
+          <span class="t-caption field__label">아이디</span>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:var(--space-2)">
+            <input class="field__input" value="changhee">
+            <button class="btn btn--outline" style="height:52px">중복 확인</button>
+          </div>
+          <span class="t-caption field__help" style="color:var(--success)">사용할 수 있는 아이디입니다</span>
+        </div>
+
+        <label class="field">
+          <span class="t-caption field__label">비밀번호</span>
+          <input class="field__input" type="password" value="········">
+          <span class="t-caption field__help">영문·숫자 포함 8자 이상</span>
+        </label>
+
+        <label class="field">
+          <span class="t-caption field__label">닉네임</span>
+          <input class="field__input" value="창희">
+          <span class="t-caption field__help">2~10자, 중복 불가</span>
+        </label>
+      </section>
+    </div>
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">가입 완료</button>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

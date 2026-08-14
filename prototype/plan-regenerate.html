@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>계획 재생성 확인 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+
+    <div class="screen screen--tabbed">
+      <header class="appbar">
+        <h1 class="t-h1 appbar__title">계획</h1>
+      </header>
+      <section class="pad mb-6">
+        <div class="goal-card">
+          <div class="goal-card__top">
+            <span class="t-h3 goal-card__name">정보처리기사 필기 합격</span>
+            <span class="t-caption goal-card__dday num">D-27</span>
+          </div>
+          <div class="goal-card__rate">
+            <strong class="t-h1 num">68</strong><span class="t-h3">%</span>
+          </div>
+          <div class="gauge"><i style="width:68%"></i></div>
+        </div>
+      </section>
+      <section class="pad">
+        <ul class="plan-list" style="list-style:none">
+          <li class="plan-block" data-state="done">
+            <button class="plan-block__check">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6.2L4.6 8.8L10 3.4" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div><p class="t-h3 plan-block__title">개념 정리 — 소프트웨어 설계</p></div>
+          </li>
+          <li class="plan-block">
+            <button class="plan-block__check"></button>
+            <div><p class="t-h3 plan-block__title">오답 노트 정리</p></div>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <!--
+      확정 문구를 그대로 쓴다 (DESIGN.md §7).
+      완료 항목과의 충돌 규칙은 아직 미정 — agy B-4 참조.
+    -->
+    <div class="dialog" role="alertdialog" aria-label="계획 재생성 확인">
+      <span class="badge badge--ai t-micro">AI 계획 재생성</span>
+      <h2 class="t-h2 dialog__title mt-4">이번 주 계획 다시 만들기</h2>
+      <p class="t-body dialog__body">완료한 일정은 유지하고 남은 일정만 다시 짤까요?</p>
+      <div class="dialog__acts">
+        <button class="btn btn--quiet">취소</button>
+        <button class="btn btn--primary">다시 만들기</button>
+      </div>
+    </div>
+
+    <nav class="tabbar">
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>통계 빈 상태 · 집계 중 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">통계</h1></header>
+      <p class="pad t-caption muted3 mb-4">집계 중…</p>
+
+      <section class="pad mb-6">
+        <div class="segment" role="tablist">
+          <button class="segment__item" role="tab" aria-selected="true">주간</button>
+          <button class="segment__item" role="tab" aria-selected="false">월간</button>
+        </div>
+      </section>
+
+      <!--
+        데이터가 없는 첫 사용 시 그래프 대신 빈 상태 문구 (agy A-6, 확정 문구).
+      -->
+      <section class="empty-state" style="padding-block:var(--space-10)">
+        <p class="t-body">아직 기록된 학습 데이터가 없어요.<br>첫 타이머 세션을 시작해보세요</p>
+        <button class="btn btn--primary">타이머 시작하기</button>
+      </section>
+
+      <!-- 집계가 진행 중일 때는 통계 카드 자리에 스켈레톤 (agy A-1) -->
+      <section class="pad mb-8">
+        <h2 class="t-caption muted mb-3">참고 · 집계 진행 중</h2>
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:58%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:80%"></div>
+          </div>
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:52%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:46%"></div>
+          </div>
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:64%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:40%"></div>
+          </div>
+          <div class="stat-tile">
+            <div class="skeleton" style="height:13px; width:60%"></div>
+            <div class="skeleton mt-2" style="height:22px; width:52%"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 패턴 분석 데이터 부족 (확정 문구) -->
+      <section class="pad">
+        <h2 class="t-caption muted mb-3">참고 · 데이터 부족</h2>
+        <div class="card card--quiet">
+          <p class="t-body-sm muted">아직 패턴을 분석하기엔 데이터가 부족해요 (앞으로 6일 더 필요)</p>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

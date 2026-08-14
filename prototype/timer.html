@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko" data-mode="focus">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>포커스 타이머 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen">
+
+      <header class="appbar">
+        <button class="icon-btn" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="badge badge--on t-micro">집중모드 켜짐</span>
+      </header>
+
+      <!-- 진행 중 일정 -->
+      <section class="pad mt-4" style="text-align:center">
+        <p class="t-h3">기출문제 풀이</p>
+        <p class="t-caption muted3 mt-2">AI 예상 소요시간 1시간 30분</p>
+      </section>
+
+      <!-- 원형 진행바 -->
+      <section class="mt-8 mb-8">
+        <div class="ring">
+          <svg viewBox="0 0 260 260" aria-hidden="true">
+            <circle class="ring__track" cx="130" cy="130" r="115"/>
+            <circle class="ring__bar"   cx="130" cy="130" r="115"
+                    stroke-dasharray="722.57" stroke-dashoffset="527.48"/>
+          </svg>
+          <div class="ring__center">
+            <span class="t-display num">24:13</span>
+            <span class="t-caption muted3 num">1시간 30분 중 27%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 컨트롤 -->
+      <section class="pad">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3)">
+          <button class="btn btn--outline">일시정지</button>
+          <button class="btn btn--primary">종료</button>
+        </div>
+      </section>
+
+      <!-- 오늘 완료한 세션 -->
+      <section class="pad mt-8">
+        <h2 class="t-caption muted mb-3">오늘 완료한 세션</h2>
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">개념 정리 — 소프트웨어 설계</span>
+            <span class="t-caption list-row__value num">58분</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">전날 오답 확인</span>
+            <span class="t-caption list-row__value num">26분</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

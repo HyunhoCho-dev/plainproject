@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>계획 생성 결과 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen" style="padding-bottom:132px">
+
+      <header class="appbar"></header>
+
+      <section class="pad">
+        <span class="badge badge--ai t-micro">AI 분석 완료</span>
+        <h1 class="t-h1 mt-4 mb-3">계획이 준비됐어요</h1>
+        <p class="t-body muted">정보처리기사 필기 합격 · 하루 2.5시간 기준</p>
+      </section>
+
+      <!-- (1)(2)(3) 분석 결과 카드 -->
+      <section class="pad mt-8">
+        <div class="stack" style="gap:var(--space-3)">
+
+          <div class="card">
+            <span class="t-caption muted">예상 목표 달성 기간</span>
+            <p class="t-h2 mt-2"><span class="num">약 10주</span></p>
+            <p class="t-caption muted3 mt-2">지금 속도를 유지하면 10월 셋째 주쯤 끝나요</p>
+          </div>
+
+          <div class="card">
+            <span class="t-caption muted">주간 추천 학습시간</span>
+            <p class="t-h2 mt-2"><span class="num">주 14시간</span></p>
+            <p class="t-caption muted3 mt-2">평일 2시간 · 주말 2시간씩 나눠 배치했어요</p>
+          </div>
+
+          <div class="card">
+            <span class="t-caption muted">첫 주 집중 영역</span>
+            <p class="t-h2 mt-2">이론 · 개념 정리</p>
+            <p class="t-caption muted3 mt-2">중급 단계라 개념을 먼저 다진 뒤 기출로 넘어갑니다</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- (4) AI 처방 코멘트 -->
+      <section class="pad mt-6">
+        <div class="ai-card">
+          <span class="badge badge--ai t-micro">AI 처방</span>
+          <p class="t-body ai-card__body">
+            하루 2.5시간이면 넉넉한 편이에요. 다만 마지막 2주는 기출 반복에
+            시간이 몰리니, 초반 4주 동안 개념을 확실히 끝내두는 게 좋습니다.
+          </p>
+          <button class="btn btn--quiet">근거 보기</button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <div class="footbar">
+      <button class="btn btn--primary btn--block">계획 확인하러 가기</button>
+    </div>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

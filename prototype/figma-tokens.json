@@ -1,0 +1,148 @@
+{
+  "$description": "집중 지원 앱 디자인 토큰 — Figma용. Tokens Studio 플러그인에서 Import 하면 Figma 변수/스타일로 들어갑니다. 원본은 DESIGN.md와 tokens.css 입니다.",
+
+  "light": {
+    "color": {
+      "bg":           { "value": "#FBFBFA", "type": "color", "description": "캔버스" },
+      "surface":      { "value": "#FFFFFF", "type": "color", "description": "카드" },
+      "surface-2":    { "value": "#F4F4F2", "type": "color", "description": "눌린 영역" },
+      "text":         { "value": "#1A1D23", "type": "color" },
+      "text-2":       { "value": "#4B5563", "type": "color" },
+      "text-3":       { "value": "#9AA1AC", "type": "color" },
+      "border":       { "value": "#E8E8E6", "type": "color" },
+      "border-strong":{ "value": "#D5D5D2", "type": "color" },
+      "accent":       { "value": "#3A6FF7", "type": "color", "description": "사용자 행동 전용" },
+      "accent-weak":  { "value": "#EBF1FE", "type": "color" },
+      "ai":           { "value": "#7C5CE0", "type": "color", "description": "AI가 만든 것 전용" },
+      "ai-weak":      { "value": "#F2EDFD", "type": "color" },
+      "success":      { "value": "#16A34A", "type": "color" },
+      "warn":         { "value": "#D97706", "type": "color" },
+      "danger":       { "value": "#DC2626", "type": "color", "description": "파괴적 행동에만. 차단 화면에는 쓰지 않음" }
+    }
+  },
+
+  "focus": {
+    "color": {
+      "bg":           { "value": "#12141A", "type": "color" },
+      "surface":      { "value": "#1C1F27", "type": "color" },
+      "surface-2":    { "value": "#242833", "type": "color" },
+      "text":         { "value": "#ECEEF3", "type": "color" },
+      "text-2":       { "value": "#A8AFBD", "type": "color" },
+      "text-3":       { "value": "#6B7280", "type": "color" },
+      "border":       { "value": "#2A2E38", "type": "color" },
+      "border-strong":{ "value": "#3A3F4B", "type": "color" },
+      "accent":       { "value": "#5B8CFF", "type": "color" },
+      "accent-weak":  { "value": "#1B2440", "type": "color" },
+      "ai":           { "value": "#9B82F0", "type": "color" },
+      "ai-weak":      { "value": "#241E3A", "type": "color" },
+      "success":      { "value": "#34D399", "type": "color" },
+      "warn":         { "value": "#D97706", "type": "color" },
+      "danger":       { "value": "#DC2626", "type": "color" }
+    }
+  },
+
+  "global": {
+    "spacing": {
+      "1":  { "value": "4",  "type": "spacing" },
+      "2":  { "value": "8",  "type": "spacing" },
+      "3":  { "value": "12", "type": "spacing" },
+      "4":  { "value": "16", "type": "spacing" },
+      "5":  { "value": "20", "type": "spacing", "description": "화면 좌우 기본 여백" },
+      "6":  { "value": "24", "type": "spacing" },
+      "8":  { "value": "32", "type": "spacing", "description": "섹션 사이" },
+      "10": { "value": "40", "type": "spacing" },
+      "12": { "value": "48", "type": "spacing" }
+    },
+
+    "borderRadius": {
+      "sm":   { "value": "8",    "type": "borderRadius", "description": "배지, 작은 태그" },
+      "md":   { "value": "12",   "type": "borderRadius", "description": "버튼, 입력" },
+      "lg":   { "value": "16",   "type": "borderRadius", "description": "카드, 계획 블록" },
+      "xl":   { "value": "20",   "type": "borderRadius", "description": "바텀시트 상단" },
+      "full": { "value": "9999", "type": "borderRadius" }
+    },
+
+    "fontFamilies": {
+      "sans": { "value": "Pretendard", "type": "fontFamilies" },
+      "num":  { "value": "SF Pro Display", "type": "fontFamilies", "description": "숫자 전용" }
+    },
+
+    "fontWeights": {
+      "regular":  { "value": "400", "type": "fontWeights" },
+      "medium":   { "value": "500", "type": "fontWeights" },
+      "semibold": { "value": "600", "type": "fontWeights" },
+      "bold":     { "value": "700", "type": "fontWeights" }
+    },
+
+    "typography": {
+      "display": {
+        "value": { "fontFamily": "{fontFamilies.num}", "fontWeight": "{fontWeights.bold}",
+                   "fontSize": "56", "lineHeight": "100%", "letterSpacing": "-2%" },
+        "type": "typography", "description": "타이머 경과 시간. 반드시 tabular-nums"
+      },
+      "h1": {
+        "value": { "fontFamily": "{fontFamilies.sans}", "fontWeight": "{fontWeights.bold}",
+                   "fontSize": "28", "lineHeight": "130%", "letterSpacing": "-1%" },
+        "type": "typography", "description": "화면 제목, 통계 대표 수치"
+      },
+      "h2": {
+        "value": { "fontFamily": "{fontFamilies.sans}", "fontWeight": "{fontWeights.semibold}",
+                   "fontSize": "20", "lineHeight": "140%", "letterSpacing": "-1%" },
+        "type": "typography", "description": "섹션 제목, 스탯 타일 수치"
+      },
+      "h3": {
+        "value": { "fontFamily": "{fontFamilies.sans}", "fontWeight": "{fontWeights.semibold}",
+                   "fontSize": "17", "lineHeight": "140%", "letterSpacing": "0" },
+        "type": "typography", "description": "카드 제목, 일정 이름"
+      },
+      "body": {
+        "value": { "fontFamily": "{fontFamilies.sans}", "fontWeight": "{fontWeights.regular}",
+                   "fontSize": "15", "lineHeight": "160%", "letterSpacing": "0" },
+        "type": "typography"
+      },
+      "body-sm": {
+        "value": { "fontFamily": "{fontFamilies.sans}", "fontWeight": "{fontWeights.regular}",
+                   "fontSize": "14", "lineHeight": "150%", "letterSpacing": "0" },
+        "type": "typography"
+      },
+      "caption": {
+        "value": { "fontFamily": "{fontFamilies.sans}", "fontWeight": "{fontWeights.medium}",
+                   "fontSize": "13", "lineHeight": "140%", "letterSpacing": "0" },
+        "type": "typography", "description": "시각, 보조 설명"
+      },
+      "micro": {
+        "value": { "fontFamily": "{fontFamilies.sans}", "fontWeight": "{fontWeights.semibold}",
+                   "fontSize": "11", "lineHeight": "130%", "letterSpacing": "0" },
+        "type": "typography", "description": "배지"
+      }
+    },
+
+    "sizing": {
+      "frame-mobile-w": { "value": "375", "type": "sizing" },
+      "frame-mobile-h": { "value": "812", "type": "sizing" },
+      "frame-pc-w":     { "value": "1440", "type": "sizing" },
+      "tabbar":         { "value": "56",  "type": "sizing" },
+      "minibar":        { "value": "48",  "type": "sizing" },
+      "button":         { "value": "48",  "type": "sizing" },
+      "field":          { "value": "52",  "type": "sizing" },
+      "list-row":       { "value": "56",  "type": "sizing" },
+      "touch-min":      { "value": "44",  "type": "sizing", "description": "터치 타겟 최소" },
+      "sidebar-pc":     { "value": "240", "type": "sizing" },
+      "aside-pc":       { "value": "300", "type": "sizing" },
+      "main-max-pc":    { "value": "720", "type": "sizing" }
+    },
+
+    "boxShadow": {
+      "default": {
+        "value": { "x": "0", "y": "4", "blur": "16", "spread": "0", "color": "rgba(26,29,35,0.08)", "type": "dropShadow" },
+        "type": "boxShadow",
+        "description": "바텀시트·세그먼트 선택·하단 고정 버튼에만. 집중 모드에서는 사용하지 않음"
+      }
+    }
+  },
+
+  "$themes": [
+    { "name": "일반 모드", "selectedTokenSets": { "light": "enabled", "global": "source" } },
+    { "name": "집중 모드", "selectedTokenSets": { "focus": "enabled", "global": "source" } }
+  ]
+}

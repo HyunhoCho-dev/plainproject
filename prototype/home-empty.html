@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>홈 빈 상태 · 오프라인 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <!-- 오프라인 상단 고정 배너 (확정 문구) -->
+      <div class="banner t-caption">오프라인 상태예요, 일부 기능이 제한돼요</div>
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">계획</h1></header>
+
+      <!--
+        계획이 없는 첫 홈 화면. 빈 스케줄 대신 CTA 카드를 중앙에 배치한다 (agy B-6).
+        빈 상태에 일러스트를 넣지 않는다 — 문구와 버튼이면 충분하다 (DESIGN.md §7).
+      -->
+      <section class="empty-state" style="padding-top:var(--space-12)">
+        <p class="t-body">아직 계획이 없어요.<br>목표를 알려주시면 AI가 첫 주 계획을 짜드릴게요.</p>
+        <button class="btn btn--primary">목표 입력하고 첫 계획 받기</button>
+      </section>
+
+      <!-- 계획 생성 실패 상태 (확정 문구) -->
+      <section class="pad mt-8">
+        <h2 class="t-caption muted mb-3">참고 · 생성 실패 시</h2>
+        <div class="card">
+          <p class="t-body mb-4">계획을 만드는 데 문제가 생겼어요</p>
+          <button class="btn btn--outline">다시 시도</button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

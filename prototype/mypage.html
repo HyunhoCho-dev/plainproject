@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마이페이지 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">마이페이지</h1></header>
+
+      <!-- ① 프로필 영역 — 스트릭 배지를 우측 상단에 강조 -->
+      <section class="pad mb-6">
+        <div style="display:flex; align-items:center; gap:var(--space-4)">
+          <div style="width:64px; height:64px; border-radius:var(--r-full);
+                      background:var(--surface-2); border:1px solid var(--border); flex-shrink:0"></div>
+          <div style="flex:1">
+            <p class="t-h2">김창희</p>
+            <p class="t-caption muted3 mt-2 num">2026년 7월 21일 가입</p>
+          </div>
+          <div style="text-align:center">
+            <div class="t-h2 num" style="color:var(--warn)">🔥 12</div>
+            <div class="t-micro muted3 mt-2">일 연속</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ② 목표 요약 카드 — 탭하면 계획 페이지로 -->
+      <section class="pad mb-6">
+        <div class="goal-card" role="button" tabindex="0">
+          <div class="goal-card__top">
+            <span class="t-h3 goal-card__name">정보처리기사 필기 합격</span>
+            <span class="t-caption goal-card__dday num">D-27</span>
+          </div>
+          <div class="goal-card__rate">
+            <strong class="t-h1 num">68</strong><span class="t-h3">%</span>
+            <span class="t-caption" style="margin-left:auto">계획 보기 ›</span>
+          </div>
+          <div class="gauge"><i style="width:68%"></i></div>
+        </div>
+      </section>
+
+      <!-- ③ 간단 통계 미리보기 — 7개 얇은 스파크라인 -->
+      <section class="pad mb-8">
+        <div class="card" role="button" tabindex="0">
+          <div style="display:flex; align-items:baseline; justify-content:space-between">
+            <span class="t-caption muted">이번 주</span>
+            <span class="t-caption muted3">통계 보기 ›</span>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:var(--space-4)" class="mt-2 mb-4">
+            <span class="t-h2 num">14시간 20분</span>
+            <span class="t-caption muted3 num">실행률 82%</span>
+          </div>
+          <div class="spark">
+            <i style="height:46%"></i><i style="height:72%"></i><i style="height:88%" data-today="true"></i>
+            <i style="height:34%"></i><i style="height:60%"></i><i style="height:18%"></i><i style="height:4%"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- ④ 설정 메뉴 리스트 (명세 순서 그대로) -->
+      <section class="pad">
+        <h2 class="t-caption muted mb-3">설정</h2>
+        <div class="list">
+          <button class="list-row">
+            <span class="t-body list-row__label">목표 재설정</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">알림 설정</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">차단 앱 관리</span>
+            <span class="t-caption list-row__value num">12개</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">계정 정보 수정</span>
+            <span class="list-row__chev">›</span>
+          </button>
+          <button class="list-row">
+            <span class="t-body list-row__label">내 데이터 보기
+              <small>원본 세션 기록 열람</small>
+            </span>
+            <span class="list-row__chev">›</span>
+          </button>
+        </div>
+
+        <!-- 로그아웃 — 확인창 없이 즉시 처리 -->
+        <div class="list mt-4">
+          <button class="list-row">
+            <span class="t-body list-row__label">로그아웃</span>
+          </button>
+        </div>
+
+        <!-- 회원탈퇴 — 최하단 텍스트 링크 -->
+        <div class="mt-6" style="text-align:center">
+          <button class="btn btn--text t-caption muted3">회원탈퇴</button>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

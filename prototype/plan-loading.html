@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 분석 중 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen">
+
+      <header class="appbar"></header>
+
+      <!-- 스피너를 쓰지 않는다. 들어갈 내용 모양대로 스켈레톤을 놓는다 (DESIGN.md §7) -->
+      <section class="pad mt-8">
+        <span class="badge badge--ai t-micro">AI 분석 중</span>
+        <h1 class="t-h1 mt-4 mb-3">계획을 만들고 있어요</h1>
+        <p class="t-body muted">목표와 하루 가능 시간을 맞춰보는 중입니다.<br>20초쯤 걸려요.</p>
+      </section>
+
+      <section class="pad mt-8">
+        <div class="stack" style="gap:var(--space-3)">
+          <div class="card">
+            <div class="skeleton" style="height:13px; width:38%"></div>
+            <div class="skeleton mt-3" style="height:24px; width:56%"></div>
+          </div>
+          <div class="card">
+            <div class="skeleton" style="height:13px; width:44%"></div>
+            <div class="skeleton mt-3" style="height:24px; width:48%"></div>
+          </div>
+          <div class="card">
+            <div class="skeleton" style="height:13px; width:34%"></div>
+            <div class="skeleton mt-3" style="height:24px; width:62%"></div>
+          </div>
+          <div class="ai-card">
+            <div class="skeleton" style="height:20px; width:64px; background:var(--surface)"></div>
+            <div class="skeleton mt-4" style="height:15px; width:100%; background:var(--surface)"></div>
+            <div class="skeleton mt-2" style="height:15px; width:82%;  background:var(--surface)"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 진행 상황 문구 -->
+      <section class="pad mt-8">
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted3">목표 해석</span>
+            <span class="t-caption" style="color:var(--success)">완료</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">주간 계획 배치</span>
+            <span class="t-caption" style="color:var(--ai)">진행 중</span>
+          </div>
+          <div class="list-row">
+            <span class="t-body-sm list-row__label muted3">일정별 시간 배정</span>
+            <span class="t-caption muted3">대기</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>

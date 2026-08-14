@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>통계 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen screen--tabbed">
+
+      <header class="appbar"><h1 class="t-h1 appbar__title">통계</h1></header>
+
+      <!-- 갱신 시각 — 배치 집계 구조라 반드시 표기 (agy A-1) -->
+      <p class="pad t-caption muted3 mb-4">마지막 업데이트: 오늘 오전 6시</p>
+
+      <!-- 주간 / 월간 -->
+      <section class="pad mb-6">
+        <div class="segment" role="tablist">
+          <button class="segment__item" role="tab" aria-selected="true">주간</button>
+          <button class="segment__item" role="tab" aria-selected="false">월간</button>
+        </div>
+      </section>
+
+      <!-- 요일별 막대그래프 -->
+      <section class="pad mb-8">
+        <div class="bars">
+          <div class="bars__col"><i class="bars__bar" style="height:46%"></i><span class="t-micro bars__label">월</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:72%"></i><span class="t-micro bars__label">화</span></div>
+          <div class="bars__col" data-today="true"><i class="bars__bar" style="height:88%"></i><span class="t-micro bars__label">수</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:34%"></i><span class="t-micro bars__label">목</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:60%"></i><span class="t-micro bars__label">금</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:18%"></i><span class="t-micro bars__label">토</span></div>
+          <div class="bars__col"><i class="bars__bar" style="height:0%"></i><span class="t-micro bars__label">일</span></div>
+        </div>
+      </section>
+
+      <!-- 2×2 스탯 타일 -->
+      <section class="pad mb-8">
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">총 학습시간</span>
+            <span class="t-h2 num stat-tile__value">14시간 20분</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">계획 실행률</span>
+            <span class="t-h2 num stat-tile__value">82%</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">방해요소 차단</span>
+            <span class="t-h2 num stat-tile__value">37회</span>
+          </div>
+          <div class="stat-tile">
+            <span class="t-caption stat-tile__label">평균 집중 유지</span>
+            <span class="t-h2 num stat-tile__value">41분</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 최하단 AI 인사이트 (agy A-7) -->
+      <section class="pad">
+        <div class="ai-card">
+          <span class="badge badge--ai t-micro">AI 인사이트</span>
+          <p class="t-body ai-card__body">
+            오전 10시–12시에 집중 유지 시간이 가장 길었어요. 목요일에만 유독
+            세션이 짧게 끊기는데, 이 시간대 일정을 오전으로 옮겨보면 어떨까요?
+          </p>
+          <button class="btn btn--quiet">다음 계획에 반영하기</button>
+        </div>
+      </section>
+
+      <!-- 5분 예외 허용 사용 횟수 (agy B-3: 남용 방지) -->
+      <section class="pad mt-6">
+        <div class="list">
+          <div class="list-row">
+            <span class="t-body-sm list-row__label">'5분만 허용' 사용</span>
+            <span class="t-caption list-row__value num">이번 주 6회</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /screen -->
+
+    <nav class="tabbar">
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 9.5L11 4l7 5.5V18a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1V9.5Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg><span class="t-micro">홈</span>
+      </button>
+      <button class="tabbar__item" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M5 17V11M11 17V5M17 17v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg><span class="t-micro">통계</span>
+      </button>
+      <button class="tabbar__item">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M4.5 18c.9-3 3.4-4.5 6.5-4.5S16.6 15 17.5 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg><span class="t-micro">마이페이지</span>
+      </button>
+    </nav>
+
+  </div><!-- /phone -->
+</div>
+
+</body>
+</html>
