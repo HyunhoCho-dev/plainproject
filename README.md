@@ -1,6 +1,6 @@
 # plainproject AI prototype
 
-Notion 기능 명세서의 AI 기능을 OpenRouter와 JavaScript로 구현한 백엔드 프로토타입입니다.
+Notion 기능 명세서의 AI 기능을 OpenRouter와 JavaScript로 구현한 백엔드 프로토타입입니다. 기본 LLM은 OpenRouter의 DeepSeek V3(`deepseek/deepseek-chat`)입니다.
 
 ## 구현 기능
 
