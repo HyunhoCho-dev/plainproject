@@ -1,0 +1,40 @@
+spring:
+  # 데이터베이스 연결 설정 (Database Connection Settings)
+  datasource:
+    # URL: H2라는 메모리 데이터베이스(컴퓨터 메모리에 저장되는 임시 DB)를 사용합니다.
+    # jdbc(Java Database Connectivity): 자바 프로그램이 DB와 연결될 때 쓰는 표준 방식입니다.
+    # mem: memory의 약자로 하드디스크가 아닌 메모리를 쓴다는 의미입니다. testdb는 DB 이름입니다.
+    url: jdbc:h2:mem:testdb
+    # 드라이버 클래스: DB와 소통하기 위한 일종의 '통역사' 역할입니다.
+    driver-class-name: org.h2.Driver
+    # 데이터베이스 접속 아이디입니다.
+    username: sa
+    # 데이터베이스 접속 비밀번호입니다. (비워둠)
+    password: 
+  
+  # JPA 설정 (Java Persistence API: 자바 객체를 DB 테이블과 연결해주는 기술)
+  jpa:
+    # Hibernate: JPA의 규칙을 실제로 구현한 가장 유명한 라이브러리입니다.
+    # ddl-auto: update (Entity 클래스의 변경사항을 DB 테이블에 자동으로 반영합니다.)
+    # 초보자가 개발할 때 DB를 매번 직접 만들 필요가 없어서 편리합니다.
+    hibernate:
+      ddl-auto: update
+    # show-sql: true (Spring이 생성한 SQL문을 콘솔창에 보여줍니다. 공부할 때 아주 좋습니다.)
+    show-sql: true
+    properties:
+      hibernate:
+        # format_sql: true (콘솔창에 출력되는 SQL문을 예쁘게 줄바꿈해서 보여줍니다.)
+        format_sql: true
+
+  # H2 콘솔 웹 화면 설정 (웹 브라우저에서 DB 안의 데이터를 직접 볼 수 있게 해줍니다.)
+  h2:
+    console:
+      # enabled: true (콘솔 기능을 켭니다.)
+      enabled: true
+      # path: 웹 브라우저 접속 주소입니다. (예: http://localhost:8080/h2-console)
+      path: /h2-console
+
+# 서버 설정 (Server Settings)
+server:
+  # port: 우리 백엔드 서버가 몇 번 포트(통신 통로 번호)에서 실행될지 정합니다. 기본값은 8080입니다.
+  port: 8080
