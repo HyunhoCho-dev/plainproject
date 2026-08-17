@@ -44,6 +44,8 @@ npm run dev
 
 자세한 요청 예시는 [`docs/API.md`](docs/API.md)를 참고하세요.
 
+프론트엔드 연결 방법과 실제 `fetch` 예시는 [`docs/FRONTEND_BACKEND_GUIDE.md`](docs/FRONTEND_BACKEND_GUIDE.md)를 참고하세요.
+
 ## 구조
 
 ```text

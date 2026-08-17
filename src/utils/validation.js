@@ -1,5 +1,6 @@
 import { HttpError } from "./http-error.js";
 
+// 아래 함수들은 OpenRouter에 보내기 전에 요청 데이터의 형식과 크기를 검사합니다.
 export function requireObject(value, fieldName = "요청 본문") {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new HttpError(400, `${fieldName}은 객체여야 합니다.`);
@@ -43,4 +44,3 @@ export function optionalString(value, fieldName, max = 500) {
   if (value === undefined || value === null || value === "") return undefined;
   return requireString(value, fieldName, { max });
 }
-

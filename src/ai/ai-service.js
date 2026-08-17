@@ -14,12 +14,15 @@ import {
 
 const PRIVACY_RULE = "이름, 이메일, 알림 본문 등 불필요한 개인정보를 요구하거나 추측하지 마세요.";
 
+// AiService는 입력 검증 → 프롬프트 구성 → 결과 검증 순서를 담당합니다.
+// HTTP나 데이터베이스 코드를 넣지 않아 각 AI 기능을 독립적으로 테스트할 수 있습니다.
 export class AiService {
   constructor(client) {
     this.client = client;
   }
 
   async createPlan(input) {
+    // 사용자의 목표와 가능한 시간을 정리해 주간·일일 계획을 요청합니다.
     requireObject(input);
     const goal = requireString(input.goal, "goal", { max: 500 });
     const currentLevel = requireString(input.currentLevel, "currentLevel", { max: 300 });
@@ -38,6 +41,7 @@ export class AiService {
   }
 
   async analyzeDistractions(input) {
+    // 앱 이름 대신 집계 수치를 보내 개인정보 노출을 줄입니다.
     requireObject(input);
     const goal = requireString(input.goal, "goal", { max: 500 });
     const apps = requireArray(input.apps, "apps", { max: 100 }).map((app, index) => {
@@ -63,6 +67,7 @@ confidence는 0~1 사이 숫자이며 근거가 부족하면 review를 선택하
   }
 
   async analyzePattern(input) {
+    // 의미 있는 패턴을 만들 수 있도록 최소 14일치 통계만 허용합니다.
     requireObject(input);
     const dailyStats = requireArray(input.dailyStats, "dailyStats", { min: 14, max: 90 });
     const safeStats = dailyStats.map((day, index) => {
@@ -87,6 +92,7 @@ confidence는 0~1 사이 숫자이며 근거가 부족하면 review를 선택하
   }
 
   async judgeNotification(input) {
+    // 알림 본문은 보내지 않고 앱 종류와 현재 집중 목표만 사용합니다.
     requireObject(input);
     const appId = requireString(input.appId, "appId", { max: 100 });
     const appCategory = optionalString(input.appCategory, "appCategory", 100);
@@ -102,4 +108,3 @@ confidence는 0~1 사이 숫자이며 근거가 부족하면 review를 선택하
     return validateNotification(result);
   }
 }
-

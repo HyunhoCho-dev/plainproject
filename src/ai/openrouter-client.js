@@ -3,6 +3,7 @@ import { HttpError } from "../utils/http-error.js";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
+// 재시도 사이에 잠깐 기다리기 위한 작은 도우미입니다.
 function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
@@ -31,11 +32,13 @@ export class OpenRouterClient {
       throw new HttpError(503, "OPENROUTER_API_KEY가 설정되지 않았습니다.");
     }
 
+    // 일시적인 서버 오류나 사용량 제한은 최대 maxRetries만큼 다시 시도합니다.
     for (let attempt = 0; attempt <= this.maxRetries; attempt += 1) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), this.timeoutMs);
 
       try {
+        // API 키는 브라우저가 아니라 이 백엔드에서만 OpenRouter로 전송합니다.
         const response = await this.fetch(OPENROUTER_URL, {
           method: "POST",
           signal: controller.signal,
@@ -74,6 +77,7 @@ export class OpenRouterClient {
         if (typeof content !== "string") {
           throw new HttpError(502, "OpenRouter 응답에 AI 메시지가 없습니다.");
         }
+        // 문자열 응답을 JavaScript 객체로 바꾼 뒤 각 기능의 검증기로 넘깁니다.
         return parseJson(content);
       } catch (error) {
         if (error.name === "AbortError") {
@@ -89,4 +93,3 @@ export class OpenRouterClient {
     throw new HttpError(502, "AI 요청에 실패했습니다.");
   }
 }
-
