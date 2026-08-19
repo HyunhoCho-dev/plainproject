@@ -63,17 +63,6 @@ public class AccountService {
         return AccountDtos.UserResponse.from(user);
     }
 
-    /**
-     * 시연용 계정입니다.
-     * 소셜 로그인처럼 아직 실제 연동이 없는 자리에서 가입 절차 없이 화면 흐름을 끝까지 보기 위해 씁니다.
-     */
-    @Transactional
-    public AccountDtos.UserResponse findOrCreateDemoUser() {
-        return accountRepository.findByUsername("demo")
-                .map(AccountDtos.UserResponse::from)
-                .orElseGet(() -> signup(new AccountDtos.SignupRequest("demo", "demo@plain.local", "demo1234")));
-    }
-
     /* ── 비밀번호 저장 ──────────────────────────────── */
 
     /** "salt$해시" 형태로 만듭니다. 같은 비밀번호라도 사용자마다 다른 값이 저장됩니다. */

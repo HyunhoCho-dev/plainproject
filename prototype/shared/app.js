@@ -124,7 +124,8 @@
   if (stepVal) {
     const btns = $$('.stepper__btn');
     const set = d => {
-      let v = parseFloat(stepVal.textContent) + d;
+      const current = parseFloat(stepVal.textContent);
+      let v = (Number.isFinite(current) ? current : 0.5) + (Number.isFinite(current) ? d : 0);
       v = Math.min(12, Math.max(0.5, v));
       stepVal.textContent = Number.isInteger(v) ? v : v.toFixed(1);
       $$('.chip').forEach(c => c.removeAttribute('aria-selected'));

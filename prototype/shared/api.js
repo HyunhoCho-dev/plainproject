@@ -4,9 +4,7 @@
      화면 ──▶ Spring(:8080) ──▶ AI 서버(:3000, Node) ──▶ OpenRouter
    화면은 AI 서버를 직접 부르지 않는다. API 키가 브라우저에 내려오지 않게 하기 위해서다.
 
-   이 파일과 live.js는 새로 추가한 것이고, app.js는 건드리지 않았다.
-   그래서 서버 없이 파일을 더블클릭해서 열어도 프로토타입은 예전과 똑같이 돌아간다.
-   그 경우 offline 상태가 되고 화면은 HTML에 적힌 예시 내용을 그대로 보여준다. */
+   실제 데이터가 없거나 서버 요청이 실패하면 예시 답변으로 대신하지 않는다. */
 
 window.PlainAPI = (() => {
 
@@ -104,18 +102,11 @@ window.PlainAPI = (() => {
       setUserId(user.id);
       return user;
     },
-    /* 소셜 로그인 자리처럼 아직 실제 연동이 없는 곳에서 흐름을 이어보기 위한 시연 계정 */
-    async demo() {
-      const user = await post('/api/users/demo', {});
-      setUserId(user.id);
-      return user;
-    },
     logout() { store.remove(KEY.userId); store.remove(KEY.plan); store.remove(KEY.session); },
-    /* 로그인 상태가 없으면 시연 계정으로 채운다. 없으면 서버 호출이 전부 실패한다. */
-    async ensureUser() {
-      if (userId()) return userId();
-      const user = await auth.demo();
-      return user.id;
+    requireUser() {
+      const id = userId();
+      if (!id) throw new Error('로그인 후 이용해주세요.');
+      return id;
     }
   };
 
@@ -135,13 +126,16 @@ window.PlainAPI = (() => {
 
     /* 목표 입력 3단계 값으로 AI 계획을 만든다. Spring이 AI 서버를 대신 부르고 결과를 저장한다. */
     async generate() {
-      const id = await auth.ensureUser();
+      const id = auth.requireUser();
       const d = draft.read();
+      if (!d.goal || !d.currentLevel || !Number.isFinite(d.dailyHours)) {
+        throw new Error('목표, 현재 수준, 하루 가능 시간을 모두 직접 입력해주세요.');
+      }
       const plan = await post('/api/plans/generate', {
         userId: id,
-        goal: d.goal || '집중 목표',
-        currentLevel: d.currentLevel || '중급 — 기초 이론 1회독 완료',
-        dailyHours: d.dailyHours ?? 2.5,
+        goal: d.goal,
+        currentLevel: d.currentLevel,
+        dailyHours: d.dailyHours,
         startDate: new Date().toISOString().slice(0, 10),
         constraints: d.constraints
       });
@@ -150,7 +144,7 @@ window.PlainAPI = (() => {
     },
 
     async current() {
-      const id = await auth.ensureUser();
+      const id = auth.requireUser();
       const plan = await get(`/api/plans/current?userId=${id}`);
       if (plan) store.set(KEY.plan, plan);
       return plan;
@@ -174,7 +168,7 @@ window.PlainAPI = (() => {
     currentId() { return store.get(KEY.session); },
 
     async start({ goal, targetMinutes }) {
-      const id = await auth.ensureUser();
+      const id = auth.requireUser();
       const session = await post('/api/focus/start', { userId: id, goal, targetMinutes });
       store.set(KEY.session, session.id);
       return session;
@@ -190,7 +184,7 @@ window.PlainAPI = (() => {
     },
 
     async today() {
-      const id = await auth.ensureUser();
+      const id = auth.requireUser();
       return get(`/api/focus/today?userId=${id}`);
     }
   };
@@ -199,12 +193,12 @@ window.PlainAPI = (() => {
 
   const stats = {
     async summary() {
-      const id = await auth.ensureUser();
+      const id = auth.requireUser();
       return get(`/api/stats/summary?userId=${id}`);
     },
     /* 14일이 안 되면 enough:false와 needMoreDays가 온다 */
     async patterns() {
-      const id = await auth.ensureUser();
+      const id = auth.requireUser();
       return post(`/api/stats/patterns?userId=${id}`, {});
     }
   };
@@ -216,8 +210,7 @@ window.PlainAPI = (() => {
 
   /* ══ 화면에서 쓰는 작은 도구 ═════════════════════════ */
 
-  /* 서버가 없어도 화면이 깨지지 않게 감싼다.
-     성공하면 결과를, 실패하면 null을 돌려주고 화면은 HTML에 적힌 예시를 그대로 둔다. */
+  /* 성공하면 결과를, 실패하면 null을 돌려준다. 예시 데이터로 대체하지 않는다. */
   async function tryOr(promiseFactory, onError) {
     try { return await promiseFactory(); }
     catch (error) { if (onError) onError(error); return null; }

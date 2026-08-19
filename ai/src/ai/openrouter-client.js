@@ -23,8 +23,8 @@ export class OpenRouterClient {
     this.apiKey = options.apiKey ?? config.openRouterApiKey;
     this.model = options.model ?? config.openRouterModel;
     this.fetch = options.fetch ?? globalThis.fetch;
-    this.timeoutMs = options.timeoutMs ?? 30_000;
-    this.maxRetries = options.maxRetries ?? 2;
+    this.timeoutMs = options.timeoutMs ?? config.openRouterTimeoutMs;
+    this.maxRetries = options.maxRetries ?? config.openRouterMaxRetries;
   }
 
   async generateJson({ system, user, schemaName }) {

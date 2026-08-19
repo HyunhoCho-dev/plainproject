@@ -8,8 +8,8 @@
    불러오는 순서가 api.js → live.js → app.js 라서 여기서 등록한 처리기가 먼저 실행된다.
    app.js의 동작을 대신해야 하는 자리(로그인 실패, 세션 종료)는 캡처 단계에서 가로챈다.
 
-   원칙: 서버가 없거나 데이터가 없으면 아무것도 건드리지 않는다.
-   HTML에 적힌 예시 내용이 그대로 남아 프로토타입은 계속 볼 수 있다. */
+   원칙: 서버가 없거나 데이터가 없으면 예시 답변을 보여주지 않고
+   빈 상태 또는 실제 오류를 표시한다. */
 
 (() => {
 
@@ -93,26 +93,31 @@
      app.js가 다음 화면으로 넘기기 직전에 입력값만 저장한다. 이동은 app.js가 그대로 한다. */
 
   function goalStep() {
-    const save = {
-      'goal-time.html': () => {
+    if (page === 'goal-time.html') {
+      takeOver('다음', () => {
         const hours = parseFloat($('.stepper__value .t-display')?.textContent);
-        PlainAPI.draft.patch({ dailyHours: isNaN(hours) ? 2.5 : hours });
-      },
-      'goal-level.html': () => {
+        if (!Number.isFinite(hours)) return toast('하루 가능 시간을 선택해주세요.');
+        PlainAPI.draft.patch({ dailyHours: hours });
+        go('goal-level.html');
+      });
+    }
+    if (page === 'goal-level.html') {
+      takeOver('다음', () => {
         const picked = $('.chip-card[aria-selected="true"]');
-        if (picked) PlainAPI.draft.patch({ currentLevel: picked.textContent.trim().replace(/\s+/g, ' — ') });
-      },
-      'goal-content.html': () => {
+        if (!picked) return toast('현재 수준을 선택해주세요.');
+        PlainAPI.draft.patch({ currentLevel: picked.textContent.trim().replace(/\s+/g, ' — ') });
+        go('goal-content.html');
+      });
+    }
+    if (page === 'goal-content.html') {
+      takeOver('계획 만들기', () => {
         const goal = $('.field__area')?.value.trim();
-        if (goal) {
-          PlainAPI.draft.patch({ goal });
-          // 새 목표를 넣었으니 예전 계획은 버린다. 결과 화면이 새로 만들도록.
-          PlainAPI.plans.forget();
-        }
-      }
-    }[page];
-
-    if (save) before('.footbar .btn--primary', save);
+        if (!goal) return toast('목표를 직접 입력해주세요.');
+        PlainAPI.draft.patch({ goal });
+        PlainAPI.plans.forget();
+        go('plan-loading.html');
+      });
+    }
   }
 
   /* ══ 계획 생성 결과 ═══════════════════════════════
@@ -124,19 +129,28 @@
     let plan = PlainAPI.plans.cached();
 
     if (!plan) {
+      // 서버 응답 전에는 기존 HTML의 샘플 분석값을 전부 지운다.
+      text($('.badge--ai'), 'AI 분석 중');
+      text($('h1.t-h1'), '계획을 만들고 있어요');
+      text($('.screen .pad .t-body.muted') || $('.onboard__inner > .t-body.muted'),
+           '입력한 내용으로 실시간 AI 계획을 만들고 있어요.');
+      $$('.card .t-h2').forEach(el => { el.textContent = '계산 중…'; });
+      $$('.card .t-caption.muted3').forEach(el => { el.textContent = ''; });
       const body = $('.ai-card__body');
-      text(body, '계획을 만드는 중이에요. 20초쯤 걸려요.');
+      text(body, '실시간 AI 결과를 기다리고 있어요. 잠시만 기다려주세요.');
       try {
         plan = await PlainAPI.plans.generate();
       } catch (error) {
-        if (error.offline) return;          // 서버가 없으면 예시 화면을 그대로 둔다
         return planError(error.message);
       }
     }
     render(plan);
 
     function render(plan) {
-      text($('.screen .pad .t-body.muted'), `${plan.goal} · 하루 ${plan.dailyHours}시간 기준`);
+      text($('.badge--ai'), 'AI 분석 완료');
+      text($('h1.t-h1'), '계획이 준비됐어요');
+      text($('.screen .pad .t-body.muted') || $('.onboard__inner > .t-body.muted'),
+           `${plan.goal} · 하루 ${plan.dailyHours}시간 기준`);
 
       const cards = $$('.card');
       if (plan.estimatedWeeks && cards[0]) text($('.t-h2', cards[0]), `약 ${plan.estimatedWeeks}주`);
@@ -158,7 +172,7 @@
 
   /* 계획 생성 실패 화면 (DESIGN.md §7 확정 문구) */
   function planError(reason) {
-    const screen = $('.screen');
+    const screen = $('.screen') || $('.onboard__inner');
     if (!screen) return;
     screen.innerHTML = `
       <header class="appbar"></header>
@@ -174,8 +188,9 @@
   /* ══ 홈 ═══════════════════════════════════════════ */
 
   async function home() {
+    try { PlainAPI.auth.requireUser(); } catch { return go('login.html'); }
     const plan = await PlainAPI.tryOr(() => PlainAPI.plans.current());
-    if (!plan) return;                       // 계획이 아직 없으면 예시 화면을 그대로 둔다
+    if (!plan) return go('home-empty.html');
 
     const day = PlainAPI.plans.today(plan);
     if (!day || !day.blocks.length) return;
@@ -223,20 +238,22 @@
   }
 
   /* ══ 타이머 ═══════════════════════════════════════
-     [메모] 화면의 시계 자체는 app.js가 굴린다(예시 값 24:13에서 시작).
+     [메모] 화면의 시계 자체는 app.js가 굴린다(00:00에서 시작).
      app.js를 고치지 않기로 해서 표시는 그대로 두고, 세션 기록만 서버에 남긴다.
      실제 집중 시간은 서버가 시작·종료 시각으로 계산하므로 기록은 정확하다. */
 
   async function timer() {
     const plan = PlainAPI.plans.cached();
+    if (!plan) return go('home-empty.html');
     const day = plan && PlainAPI.plans.today(plan);
     const blocks = (day && day.blocks) || [];
     const active = pickActive(blocks);
     const block = active >= 0 ? blocks[active] : null;
-    const targetMinutes = block ? (PlainAPI.spanMinutes(block.start, block.end) || 90) : 90;
+    if (!block) return go('home-empty.html');
+    const targetMinutes = PlainAPI.spanMinutes(block.start, block.end);
 
     const session = await PlainAPI.tryOr(() => PlainAPI.sessions.start({
-      goal: block ? block.title : (plan ? plan.goal : '집중'),
+      goal: block.title,
       targetMinutes
     }));
 
@@ -272,8 +289,9 @@
   /* ══ 통계 ═════════════════════════════════════════ */
 
   async function stats() {
+    try { PlainAPI.auth.requireUser(); } catch { return go('login.html'); }
     const summary = await PlainAPI.tryOr(() => PlainAPI.stats.summary());
-    if (!summary) return;
+    if (!summary || !summary.dailyStats?.some(day => day.studyMinutes > 0)) return go('stats-empty.html');
 
     const tiles = $$('.stat-tile__value');
     text(tiles[0], PlainAPI.minutesToText(summary.weekMinutes));
@@ -330,12 +348,13 @@
         await PlainAPI.auth.login(inputs[0]?.value.trim(), inputs[1]?.value);
         go('home.html');
       } catch (error) {
-        if (error.offline) return go('home.html');   // 서버가 없으면 흐름을 막지 않는다
         toast(error.message);
       }
     });
-    // 소셜 로그인은 아직 연동 전이라 시연 계정으로 흐름만 이어준다.
-    before('.social', () => { PlainAPI.tryOr(() => PlainAPI.auth.demo()); });
+    $$('.social').forEach(button => {
+      button.disabled = true;
+      button.title = '소셜 로그인은 아직 연결되지 않았습니다.';
+    });
   }
 
   function signup() {
@@ -350,11 +369,13 @@
         await PlainAPI.auth.signup(username, password);
         go('goal-time.html');
       } catch (error) {
-        if (error.offline) return go('goal-time.html');
         toast(error.message);
       }
     });
-    before('.social', () => { PlainAPI.tryOr(() => PlainAPI.auth.demo()); });
+    $$('.social').forEach(button => {
+      button.disabled = true;
+      button.title = '소셜 회원가입은 아직 연결되지 않았습니다.';
+    });
   }
 
   /* ══ 화면별 실행 ═══════════════════════════════════ */
@@ -364,9 +385,12 @@
     'goal-level.html':   goalStep,
     'goal-content.html': goalStep,
     'plan-result.html':  planResult,
+    'plan-result-desktop.html': planResult,
     'home.html':         home,
+    'home-desktop.html': home,
     'timer.html':        timer,
     'stats.html':        stats,
+    'stats-desktop.html': stats,
     'login.html':        login,
     'signup.html':       signup
   };
