@@ -1,0 +1,22 @@
+{
+  "name": "PLAIN 통합 개발 환경",
+  "image": "mcr.microsoft.com/devcontainers/java:1-17-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "forwardPorts": [8080, 3000],
+  "portsAttributes": {
+    "8080": {
+      "label": "PLAIN 서비스",
+      "onAutoForward": "openBrowser"
+    },
+    "3000": {
+      "label": "내부 AI 서버",
+      "onAutoForward": "silent"
+    }
+  },
+  "postCreateCommand": "npm --prefix ai ci",
+  "postStartCommand": "bash .devcontainer/start-services.sh"
+}
