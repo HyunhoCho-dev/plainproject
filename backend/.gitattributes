@@ -1,3 +1,4 @@
-/gradlew text eol=lf
-*.bat text eol=crlf
-*.jar binary
+# [백엔드 가이드] 깃(Git)이 파일을 다룰 때 운영체제(윈도우, 맥)마다 줄바꿈 문자가 달라서 코드가 깨지는 것을 방지하는 룰입니다.
+/gradlew text eol=lf # 맥/리눅스용 실행 파일은 무조건 lf(Line Feed) 방식의 줄바꿈을 사용하라고 강제합니다.
+*.bat text eol=crlf # 윈도우용 실행 파일은 무조건 crlf(Carriage Return Line Feed) 방식의 줄바꿈을 사용하라고 강제합니다.
+*.jar binary # jar(압축된 최종 자바 파일)은 텍스트가 아닌 바이너리 파일이므로, 깃이 함부로 텍스트처럼 읽지 못하게 막습니다.
