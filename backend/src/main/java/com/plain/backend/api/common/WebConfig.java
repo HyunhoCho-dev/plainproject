@@ -39,8 +39,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // 루트로 들어오면 화면 목록으로 보냅니다.
-        registry.addRedirectViewController("/", "/prototype/index.html");
+        // 실제 사용자는 화면 모음이 아니라 로그인 화면에서 시작합니다.
+        registry.addRedirectViewController("/", "/prototype/mobile/login.html");
     }
 
     @Override

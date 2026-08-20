@@ -9,10 +9,10 @@
 </head>
 <body data-page="signup.html">
 
-<div class="stage" style="flex-wrap:wrap; gap:var(--space-8)">
+<div class="stage auth-stage">
 
   <!-- ① 진입 — 소셜 3개 우선, 전화번호는 텍스트 링크로 분리 -->
-  <div class="phone">
+  <div class="phone signup-step is-active" data-signup-step="0">
     <div class="screen">
       <header class="appbar"></header>
 
@@ -41,7 +41,7 @@
   </div>
 
   <!-- ② 전화번호 인증 -->
-  <div class="phone">
+  <div class="phone signup-step" data-signup-step="1" hidden>
     <div class="screen" style="padding-bottom:132px">
       <header class="appbar">
         <button class="icon-btn" aria-label="뒤로">
@@ -64,17 +64,17 @@
       <section class="pad mt-8">
         <label class="field">
           <span class="t-caption field__label">전화번호</span>
-          <input class="field__input num" value="010-1234-5678">
+          <input class="field__input num" type="tel" inputmode="numeric" autocomplete="tel" placeholder="전화번호를 입력하세요">
         </label>
 
         <div class="field">
           <div style="display:flex; align-items:baseline; justify-content:space-between" class="mb-2">
             <span class="t-caption field__label" style="margin:0">인증번호</span>
-            <span class="t-caption num" style="color:var(--accent)">02:47</span>
+            <span class="t-caption muted3">6자리 숫자</span>
           </div>
           <div class="otp">
-            <input class="num" value="4"><input class="num" value="9"><input class="num" value="2">
-            <input class="num" value=""><input class="num" value=""><input class="num" value="">
+            <input class="num" inputmode="numeric" maxlength="1" aria-label="인증번호 첫 번째 자리"><input class="num" inputmode="numeric" maxlength="1" aria-label="인증번호 두 번째 자리"><input class="num" inputmode="numeric" maxlength="1" aria-label="인증번호 세 번째 자리">
+            <input class="num" inputmode="numeric" maxlength="1" aria-label="인증번호 네 번째 자리"><input class="num" inputmode="numeric" maxlength="1" aria-label="인증번호 다섯 번째 자리"><input class="num" inputmode="numeric" maxlength="1" aria-label="인증번호 여섯 번째 자리">
           </div>
           <button class="btn btn--text t-caption mt-2" style="padding:0">인증번호 재전송</button>
         </div>
@@ -82,12 +82,12 @@
     </div>
 
     <div class="footbar">
-      <button class="btn btn--primary btn--block" disabled>다음</button>
+      <button class="btn btn--primary btn--block" data-signup-next>다음</button>
     </div>
   </div>
 
   <!-- ③ 약관 동의 — 필수/선택 구분, '전체 동의'가 최상단 -->
-  <div class="phone">
+  <div class="phone signup-step" data-signup-step="2" hidden>
     <div class="screen" style="padding-bottom:132px">
       <header class="appbar">
         <button class="icon-btn" aria-label="뒤로">
@@ -140,12 +140,12 @@
     </div>
 
     <div class="footbar">
-      <button class="btn btn--primary btn--block">다음</button>
+      <button class="btn btn--primary btn--block" data-signup-next>다음</button>
     </div>
   </div>
 
   <!-- ④ 아이디·비밀번호·닉네임 설정 -->
-  <div class="phone">
+  <div class="phone signup-step" data-signup-step="3" hidden>
     <div class="screen" style="padding-bottom:132px">
       <header class="appbar">
         <button class="icon-btn" aria-label="뒤로">
@@ -166,21 +166,21 @@
         <div class="field">
           <span class="t-caption field__label">아이디</span>
           <div style="display:grid; grid-template-columns:1fr auto; gap:var(--space-2)">
-            <input class="field__input" value="changhee">
+            <input class="field__input" autocomplete="username" placeholder="사용할 아이디를 입력하세요">
             <button class="btn btn--outline" style="height:52px">중복 확인</button>
           </div>
-          <span class="t-caption field__help" style="color:var(--success)">사용할 수 있는 아이디입니다</span>
+          <span class="t-caption field__help">영문과 숫자를 사용할 수 있어요</span>
         </div>
 
         <label class="field">
           <span class="t-caption field__label">비밀번호</span>
-          <input class="field__input" type="password" value="········">
+          <input class="field__input" type="password" autocomplete="new-password" placeholder="비밀번호를 입력하세요">
           <span class="t-caption field__help">영문·숫자 포함 8자 이상</span>
         </label>
 
         <label class="field">
           <span class="t-caption field__label">닉네임</span>
-          <input class="field__input" value="창희">
+          <input class="field__input" autocomplete="nickname" placeholder="사용할 닉네임을 입력하세요">
           <span class="t-caption field__help">2~10자, 중복 불가</span>
         </label>
       </section>

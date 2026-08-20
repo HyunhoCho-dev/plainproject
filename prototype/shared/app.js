@@ -319,13 +319,25 @@
       wireText('비밀번호 재설정', 'signup.html');
       break;
 
-    case 'signup.html':
-      $$('.social').forEach(b => b.addEventListener('click', () => go('goal-time.html')));
+    case 'signup.html': {
+      const steps = $$('.signup-step');
+      let currentStep = 0;
+      const showStep = index => {
+        currentStep = Math.max(0, Math.min(index, steps.length - 1));
+        steps.forEach((step, stepIndex) => {
+          const active = stepIndex === currentStep;
+          step.hidden = !active;
+          step.classList.toggle('is-active', active);
+        });
+      };
       wireText('로그인', 'login.html');
-      wireText('가입 완료', 'goal-time.html');
-      onText('다음', () => toast('다음 단계는 옆 화면에 있어요'));
-      onText('중복 확인', () => toast('사용할 수 있는 아이디입니다'));
-      onText('인증번호 재전송', () => toast('인증번호를 다시 보냈어요'));
+      onText('전화번호로 가입하기', () => showStep(1));
+      $$('[data-signup-next]').forEach(button =>
+        button.addEventListener('click', () => showStep(currentStep + 1)));
+      steps.forEach(step => step.querySelector('[aria-label="뒤로"]')
+        ?.addEventListener('click', () => showStep(currentStep - 1)));
+      onText('중복 확인', () => toast('아이디를 입력한 뒤 가입을 진행해주세요'));
+      onText('인증번호 재전송', () => toast('전화번호 인증 서버 연결이 필요합니다'));
       // 약관 체크 토글
       $$('.list-row').forEach(row => {
         const mark = row.firstElementChild;
@@ -338,7 +350,9 @@
           });
         }
       });
+      showStep(0);
       break;
+    }
 
     case 'withdraw.html':
       wireText('계속 사용할게요', 'mypage.html');

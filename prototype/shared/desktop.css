@@ -27,7 +27,7 @@ body {
 .sidebar {
   border-right: 1px solid var(--border);
   background: var(--surface);
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-8) var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
@@ -42,7 +42,7 @@ body {
   gap: var(--space-2);
   padding-inline: var(--space-2);
   color: var(--text);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 .brand__mark {
@@ -65,7 +65,7 @@ body {
   height: 44px;                    /* 터치/클릭 타겟 */
   padding-inline: var(--space-3);
   border: 0;
-  border-radius: var(--r-md);
+  border-radius: var(--r-full);
   background: none;
   color: var(--text-2);
   font-family: inherit;
@@ -109,7 +109,7 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--aside-w);
   gap: var(--space-8);
-  padding: var(--space-6) var(--page-pad) var(--space-12);
+  padding: var(--space-8) var(--page-pad) var(--space-12);
   align-items: start;
 }
 
@@ -193,6 +193,10 @@ body {
   color: var(--text-2);
   margin-bottom: var(--space-4);
 }
+
+/* 그림자 대신 얇은 선과 넉넉한 여백으로 화면 계층을 구분한다. */
+.card, .goal-card, .plan-block, .panel, .list { box-shadow: none; }
+.topbar { margin-bottom: var(--space-4); }
 
 /* 진행 중 세션 카드 — 모바일 미니바를 대체한다 */
 .session {
