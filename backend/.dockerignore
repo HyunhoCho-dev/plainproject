@@ -1,0 +1,13 @@
+# Docker 이미지를 빌드할 때, 컨테이너 안으로 불필요하게 복사되지 않아야 할 폴더와 파일 목록입니다.
+# 이렇게 하면 이미지 용량도 줄어들고, 보안도 챙길 수 있습니다.
+
+.git
+.gitignore
+.gradle
+.idea
+.vscode
+build/
+bin/
+out/
+*.log
+*.jar
