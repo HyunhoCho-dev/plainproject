@@ -10,6 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
 
 @Configuration // 이 클래스가 스프링 설정 클래스임을 명시합니다. 스프링이 구동될 때 이 클래스를 읽어 보안 설정을 적용합니다.
 @EnableWebSecurity // 스프링 시큐리티 기능을 활성화합니다. 이 어노테이션이 있어야 아래 설정들이 작동합니다.
@@ -31,6 +35,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // 0. CORS 설정 적용
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            
             // 1. CSRF (Cross-Site Request Forgery) 공격 방어 기능 끄기
             // 전통적인 세션 방식에서는 필요하지만, 현대적인 REST API(JWT 토큰 기반)에서는 보통 세션을 사용하지 않으므로 꺼도 안전합니다.
             .csrf(csrf -> csrf.disable())
@@ -59,5 +66,24 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build(); // 위에서 세팅한 내용들을 최종적으로 조립해서 스프링에게 건네줍니다.
+    }
+
+    // CORS(교차 출처 리소스 공유) 설정: 프론트엔드(예: React, Vue)가 다른 포트나 도메인에서 우리 API를 호출할 수 있게 허락해줍니다.
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // 모든 출처(Origin) 허용 (실제 운영 환경에서는 특정 도메인만 허용하는 것이 안전합니다)
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        // 허용할 HTTP 메서드 (GET, POST 등)
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        // 허용할 HTTP 헤더
+        configuration.setAllowedHeaders(List.of("*"));
+        // 자격 증명(쿠키, 인증 헤더 등) 포함 허용
+        configuration.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // 모든 경로("/**")에 대해 위에서 설정한 CORS 규칙을 적용합니다.
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
