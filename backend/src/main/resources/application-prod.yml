@@ -1,0 +1,19 @@
+spring:
+  # PostgreSQL 데이터베이스 접속 설정 (Production Profile)
+  # 이 설정은 docker-compose.yml에서 주입되는 환경변수(SPRING_DATASOURCE_*)에 의해 덮어씌워지며,
+  # 환경변수가 없을 때 사용할 기본값을 지정해둔 것입니다.
+  datasource:
+    url: jdbc:postgresql://db:5432/plaindb
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:root}
+
+  jpa:
+    # ddl-auto: update (운영 환경에서는 update를 쓰면 위험하지만, 현재는 연습 단계이므로 테이블을 자동 생성/수정하도록 둡니다)
+    hibernate:
+      ddl-auto: update
+    show-sql: false # 실제 서비스에서는 로그가 너무 많아지므로 SQL 출력을 끕니다.
+    properties:
+      hibernate:
+        # PostgreSQL에 최적화된 SQL을 생성하도록 합니다.
+        dialect: org.hibernate.dialect.PostgreSQLDialect
