@@ -2,6 +2,7 @@ package com.plain.backend.user;
 
 import org.springframework.data.jpa.repository.JpaRepository; 
 import org.springframework.stereotype.Repository; 
+import java.util.Optional;
 
 // =========================================================================================
 // [User Repository]
@@ -11,6 +12,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    // 아이디(username) 기반 사용자 조회 (일반 로그인용)
+    Optional<User> findByUsername(String username);
+
+    // 전화번호 기반 사용자 조회
+    Optional<User> findByPhone(String phone);
+
+    // 소셜 로그인 기반 사용자 조회
+    Optional<User> findBySocialProviderAndSocialId(String socialProvider, String socialId);
+
+    // 중복 가입 방지를 위한 존재 여부 확인
+    boolean existsByUsername(String username);
+    boolean existsByNickname(String nickname);
+    boolean existsByPhone(String phone);
+
     // Spring Data JPA가 구동 시점에 JpaRepository 상속 인터페이스의 프록시 구현체를 동적으로 생성하여 Bean으로 등록합니다.
     // 식별자(Long) 기반의 기본 CRUD 연산이 자동 제공되며, 필요한 경우 메서드 네이밍 컨벤션을 이용해 커스텀 쿼리 메서드를 정의할 수 있습니다.
 }

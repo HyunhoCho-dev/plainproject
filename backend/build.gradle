@@ -28,6 +28,12 @@ dependencies {
     // [가장 중요한 부분] 프로젝트에 필요한 외부 라이브러리(도구)들을 적어두면 Gradle이 알아서 다운받아줍니다.
     
     // [implementation: 일반적인 핵심 기능에 사용되는 라이브러리]
+	implementation 'org.springframework.boot:spring-boot-starter-security' // 스프링 시큐리티(인증 및 권한)
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // 소셜 로그인 (OAuth2)
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // JWT 토큰 API
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT 토큰 구현체
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JWT JSON 파싱
+	
 	implementation 'org.springframework.boot:spring-boot-h2console' // H2 데이터베이스 안의 내용을 웹 브라우저에서 시각적으로 볼 수 있게 해주는 기능입니다.
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // 자바 코드와 DB 테이블을 아주 편하게 연결해주는 마법의 데이터베이스 툴(JPA)입니다.
 	implementation 'org.springframework.boot:spring-boot-starter-validation' // 유저가 가입할 때 입력한 이메일 형식 등이 맞는지 쉽게 검사해주는 도구입니다.
