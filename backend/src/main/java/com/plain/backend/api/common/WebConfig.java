@@ -2,6 +2,7 @@ package com.plain.backend.api.common;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -34,7 +35,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/prototype/**")
-                .addResourceLocations("file:" + prototypePath);
+                .addResourceLocations("file:" + prototypePath)
+                // 화면 파일을 고쳐도 브라우저가 예전 것을 계속 쓰는 일을 막습니다.
+                // no-cache는 매번 서버에 물어보게 하고, 안 바뀌었으면 304로 가볍게 끝냅니다.
+                .setCacheControl(CacheControl.noCache());
     }
 
     @Override

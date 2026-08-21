@@ -28,6 +28,13 @@ public class AiController {
         return ResponseEntity.ok(ApiResponse.ok(aiClient.post("/api/ai/distractions/analyze", body)));
     }
 
+    /** 이 앱을 왜 차단 대상으로 추천했는지 근거를 받아옵니다. 사용 기록 없이 앱 성격과 목표만 씁니다. */
+    @PostMapping("/apps/judge")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> judgeApp(
+            @RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok(ApiResponse.ok(aiClient.post("/api/ai/apps/judge", body)));
+    }
+
     /** 알림 중요도를 판정합니다. 알림 본문은 보내지 않습니다. */
     @PostMapping("/notifications/judge")
     public ResponseEntity<ApiResponse<Map<String, Object>>> judgeNotification(

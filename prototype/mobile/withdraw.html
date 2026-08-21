@@ -9,10 +9,14 @@
 </head>
 <body data-page="withdraw.html">
 
-<div class="stage" style="flex-wrap:wrap; gap:var(--space-8)">
+<!--
+  탈퇴는 2단계다. 두 단계를 이 파일에 모두 담되 한 번에 하나만 보여준다.
+  단계 전환은 live.js의 withdraw()가 맡는다 (signup.html과 같은 방식).
+-->
+<div class="stage">
 
   <!-- ① 경고 + 본인확인 (일반 계정: 비밀번호 재입력) -->
-  <div class="phone">
+  <div class="phone" data-withdraw-step="0">
     <div class="screen" style="padding-bottom:132px">
       <header class="appbar">
         <button class="icon-btn" aria-label="뒤로">
@@ -72,7 +76,7 @@
   </div>
 
   <!-- ② 최종 확인 다이얼로그 — 한 번 더 -->
-  <div class="phone">
+  <div class="phone" data-withdraw-step="1" hidden>
     <div class="screen">
       <header class="appbar">
         <h1 class="t-h3 appbar__title">회원탈퇴</h1>

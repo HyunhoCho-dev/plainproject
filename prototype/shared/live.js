@@ -26,6 +26,11 @@
   const buttonsWith = label =>
     $$('button, a').filter(b => b.textContent.trim() === label);
 
+  /** 오늘 날짜를 YYYY-MM-DD 로. toISOString()은 UTC라서
+      한국 시간 오전 9시 이전에는 어제 날짜가 나온다. 그래서 직접 만든다. */
+  const localToday = (d = new Date()) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
   /** 캡처 단계에서 가로채 app.js의 처리기까지 막는다. 꼭 필요한 자리에만 쓴다. */
   const takeOver = (label, handler) => {
     document.addEventListener('click', event => {
@@ -53,6 +58,22 @@
     setTimeout(() => { el.removeAttribute('data-on'); setTimeout(() => el.remove(), 200); }, 1800);
   }
 
+  /* 완료 체크 표시. CSS가 아니라 이 SVG가 실제로 그려져야 ✓가 보인다.
+     그래서 화면을 다시 그릴 때와 클릭으로 켤 때 같은 것을 써야 한다. */
+  const checkIcon = () =>
+    `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+       <path d="M2 6.2L4.6 8.8L10 3.4" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  /** 블록의 완료 표시를 켜고 끈다. data-state와 ✓를 항상 함께 바꾼다. */
+  function paintDone(li, done) {
+    const button = $('.plan-block__check', li);
+    li.setAttribute('data-state', done ? 'done' : '');
+    if (!button) return;
+    button.innerHTML = done ? checkIcon() : '';
+    button.setAttribute('aria-label', done ? '완료 해제' : '완료 표시');
+  }
+
   /* ── 계획 블록 하나를 HTML로 ─────────────────────── */
   function blockHtml(block, state) {
     const minutes = PlainAPI.spanMinutes(block.start, block.end);
@@ -60,9 +81,7 @@
     return `
       <li class="plan-block" data-block-id="${block.id}"${state ? ` data-state="${state}"` : ''}>
         <button class="plan-block__check" aria-label="${state === 'done' ? '완료 해제' : '완료 표시'}">
-          ${state === 'done' ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M2 6.2L4.6 8.8L10 3.4" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+          ${state === 'done' ? checkIcon() : ''}
         </button>
         <div>
           <div class="plan-block__head">
@@ -190,51 +209,99 @@
   async function home() {
     try { PlainAPI.auth.requireUser(); } catch { return go('login.html'); }
     const plan = await PlainAPI.tryOr(() => PlainAPI.plans.current());
-    if (!plan) return go('home-empty.html');
+    if (!plan || !plan.days || !plan.days.length) return go('home-empty.html');
 
-    const day = PlainAPI.plans.today(plan);
-    if (!day || !day.blocks.length) return;
+    const today = localToday();
+    const list = $('.plan-list');
+    const strip = $$('.dateitem');
 
     text($('.goal-card__name'), plan.goal);
-    const totalMinutes = day.blocks.reduce((sum, b) => sum + PlainAPI.spanMinutes(b.start, b.end), 0);
-    const doneMinutes  = day.blocks.filter(b => b.done)
-                                   .reduce((sum, b) => sum + PlainAPI.spanMinutes(b.start, b.end), 0);
-    const rate = totalMinutes ? Math.round(doneMinutes / totalMinutes * 100) : 0;
-    text($('.goal-card__rate .num'), String(rate));
-    text($('.goal-card__rate .t-caption'),
-         `${PlainAPI.minutesToText(doneMinutes)} / ${PlainAPI.minutesToText(totalMinutes)}`);
-    const gauge = $('.gauge i');
-    if (gauge) gauge.style.width = rate + '%';
-    if (plan.estimatedWeeks) {
-      const left = plan.estimatedWeeks * 7;
-      text($('.goal-card__dday'), `D-${left}`);
-    }
+    if (plan.estimatedWeeks) text($('.goal-card__dday'), `D-${plan.estimatedWeeks * 7}`);
 
-    const list = $('.plan-list');
-    if (!list) return;
-    const activeIndex = pickActive(day.blocks);
-    list.innerHTML = day.blocks
-      .map((block, index) => blockHtml(block, block.done ? 'done' : (index === activeIndex ? 'active' : '')))
-      .join('');
+    /* ── 상단 주간 캘린더 ──
+       계획에 들어 있는 날짜를 그대로 올린다. 날짜를 누르면 그 날 일정만 다시 그린다.
+       계획 자체는 날마다 다르므로 여기서 날짜를 바꿔도 다른 날 내용에는 손대지 않는다. */
+    const todayIndex = Math.max(0, plan.days.findIndex(d => d.date === today));
+    const from = Math.max(0, Math.min(todayIndex - 3, plan.days.length - strip.length));
+    const week = plan.days.slice(from, from + strip.length);
 
-    // 제목은 AI가 만든 문자열이라 HTML로 해석되지 않게 textContent로 넣는다.
-    $$('.plan-block', list).forEach((li, index) => {
-      text($('.plan-block__title', li), day.blocks[index].title);
-    });
-
-    // 목록을 새로 그렸으므로 app.js가 걸어둔 처리기가 사라졌다. 여기서 다시 붙인다.
-    $$('.plan-block__check', list).forEach(button => {
-      button.addEventListener('click', event => {
-        event.stopPropagation();
-        const block = button.closest('.plan-block');
-        const done = block.getAttribute('data-state') === 'done';
-        block.setAttribute('data-state', done ? '' : 'done');
-        toast(done ? '완료를 해제했어요' : '완료 처리했어요');
-        PlainAPI.tryOr(() => PlainAPI.plans.setBlockDone(block.dataset.blockId, !done));
+    strip.forEach((item, index) => {
+      const day = week[index];
+      // 계획이 7일보다 짧으면 남는 칸을 지운다.
+      // hidden 속성은 .dateitem의 display 규칙에 밀리므로 style로 직접 끈다.
+      if (!day) { item.style.display = 'none'; return; }
+      item.style.display = '';
+      const date = new Date(day.date + 'T00:00:00');
+      text($('.t-micro', item), '일월화수목금토'[date.getDay()]);
+      text($('b', item), String(date.getDate()));
+      item.toggleAttribute('data-empty', day.blocks.length === 0);
+      item.addEventListener('click', () => {
+        strip.forEach(other => other.removeAttribute('aria-selected'));
+        item.setAttribute('aria-selected', 'true');
+        renderDay(day);
       });
     });
-    $('.plan-block[data-state="active"]', list)
-      ?.addEventListener('click', () => go('timer.html'));
+
+    // 날짜 칸이 없는 화면에서도 오늘이 먼저 보이게 한다.
+    const startDay = week.find(d => d.date === today) || week[0]
+                  || plan.days.find(d => d.date === today) || plan.days[0];
+    strip.forEach(item => item.removeAttribute('aria-selected'));
+    strip[week.indexOf(startDay)]?.setAttribute('aria-selected', 'true');
+    renderDay(startDay);
+
+    /* ── 하루치 일정 ── */
+    function renderDay(day) {
+      renderRate(day);
+      if (!list) return;
+
+      if (!day.blocks.length) {
+        list.innerHTML = '<li class="t-body muted3">이 날은 쉬는 날이에요</li>';
+        return;
+      }
+
+      // '진행중' 표시는 오늘에만 붙인다. 다른 날은 예정된 일정일 뿐이다.
+      const active = day.date === today ? pickActive(day.blocks) : -1;
+      list.innerHTML = day.blocks
+        .map((block, index) => blockHtml(block, block.done ? 'done' : (index === active ? 'active' : '')))
+        .join('');
+
+      // 제목은 AI가 만든 문자열이라 HTML로 해석되지 않게 textContent로 넣는다.
+      $$('.plan-block', list).forEach((li, index) => {
+        text($('.plan-block__title', li), day.blocks[index].title);
+      });
+
+      // 목록을 새로 그렸으므로 app.js가 걸어둔 처리기가 사라졌다. 여기서 다시 붙인다.
+      $$('.plan-block__check', list).forEach(button => {
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          const li = button.closest('.plan-block');
+          const block = day.blocks.find(b => String(b.id) === li.dataset.blockId);
+          if (!block) return;
+
+          block.done = !block.done;          // 누른 블록 하나만 바꾼다
+          paintDone(li, block.done);
+          renderRate(day);
+          toast(block.done ? '완료 처리했어요' : '완료를 해제했어요');
+          PlainAPI.tryOr(() => PlainAPI.plans.setBlockDone(block.id, block.done));
+        });
+      });
+
+      $('.plan-block[data-state="active"]', list)
+        ?.addEventListener('click', () => go('timer.html'));
+    }
+
+    /* ── 진행률 — 지금 보고 있는 날 기준 ── */
+    function renderRate(day) {
+      const total = day.blocks.reduce((sum, b) => sum + PlainAPI.spanMinutes(b.start, b.end), 0);
+      const done  = day.blocks.filter(b => b.done)
+                              .reduce((sum, b) => sum + PlainAPI.spanMinutes(b.start, b.end), 0);
+      const rate = total ? Math.round(done / total * 100) : 0;
+      text($('.goal-card__rate .num'), String(rate));
+      text($('.goal-card__rate .t-caption'),
+           `${PlainAPI.minutesToText(done)} / ${PlainAPI.minutesToText(total)}`);
+      const gauge = $('.gauge i');
+      if (gauge) gauge.style.width = rate + '%';
+    }
   }
 
   /* ══ 타이머 ═══════════════════════════════════════
@@ -251,6 +318,9 @@
     const block = active >= 0 ? blocks[active] : null;
     if (!block) return go('home-empty.html');
     const targetMinutes = PlainAPI.spanMinutes(block.start, block.end);
+
+    // app.js가 시계를 굴린다. 총 시간만 여기서 알려준다 (await 전에 적어야 app.js가 읽는다).
+    if (targetMinutes) document.body.dataset.totalSec = String(targetMinutes * 60);
 
     const session = await PlainAPI.tryOr(() => PlainAPI.sessions.start({
       goal: block.title,
@@ -308,7 +378,7 @@
     if (bars.length === 7) {
       const recent = summary.dailyStats.slice(-7);
       const max = Math.max(1, ...recent.map(day => day.studyMinutes));
-      const today = new Date().toISOString().slice(0, 10);
+      const today = localToday();
       const labels = ['일', '월', '화', '수', '목', '금', '토'];
       bars.forEach((col, index) => {
         const day = recent[index];
@@ -380,19 +450,246 @@
 
   /* ══ 화면별 실행 ═══════════════════════════════════ */
 
+  /* ══ 계획 근거 ═══════════════════════════════════════
+     서버를 다시 부르지 않는다. 계획을 받을 때 summary·advice·purpose가 함께 왔고
+     api.js가 그대로 저장해 두었다. 여기서는 꺼내 쓰기만 한다. */
+
+  async function planWhy() {
+    takeOver('확인했어요', () => history.back());
+
+    const plan = PlainAPI.plans.cached() || await PlainAPI.tryOr(() => PlainAPI.plans.current());
+    if (!plan || !plan.days || !plan.days.length) {
+      text($('[data-why-summary]'), '아직 만들어진 계획이 없어요');
+      return;
+    }
+
+    text($('[data-why-goal]'), plan.goal);
+    text($('[data-why-summary]'), plan.summary);
+
+    /* 조언 — 한 문단으로 뭉치지 않고 항목마다 카드 하나씩 */
+    const adviceBox = $('[data-why-advice]');
+    const advice = (plan.advice || []).filter(Boolean);
+    if (adviceBox) {
+      adviceBox.innerHTML = advice
+        .map(() => '<div class="card card--quiet"><p class="t-body"></p></div>').join('');
+      $$('p', adviceBox).forEach((p, index) => { p.textContent = advice[index]; });
+    }
+
+    /* 일정별 이유 — AI가 블록마다 만든 purpose. 지금까지 화면에서 쓰지 않던 값이다. */
+    const today = localToday();
+    const day = plan.days.find(d => d.date === today) || plan.days[0];
+    const purposeBox = $('[data-why-purposes]');
+    if (!purposeBox) return;
+
+    text($('[data-why-date]'), day.date);
+    purposeBox.innerHTML = day.blocks
+      .map(() => `<div class="card card--quiet">
+            <span class="t-caption muted"></span>
+            <p class="t-body mt-2"></p>
+          </div>`).join('');
+    $$('.card', purposeBox).forEach((card, index) => {
+      const block = day.blocks[index];
+      $('.t-caption', card).textContent = `${block.start} – ${block.end} · ${block.title}`;
+      $('.t-body', card).textContent = block.purpose || '설명이 없습니다';
+    });
+  }
+
+  /* ══ 회원탈퇴 ═════════════════════════════════════════
+     화면 파일에는 1단계(경고·본인확인)와 2단계(최종 확인)가 모두 들어 있다.
+     한 번에 하나만 보여준다. app.js는 '탈퇴하기'에 안내 토스트만 걸어 두어 가로챈다. */
+
+  function withdraw() {
+    const steps = $$('[data-withdraw-step]');
+    if (steps.length < 2) return;
+
+    // hidden 속성만으로는 CSS에 밀릴 수 있어 display까지 함께 끈다.
+    const show = index => steps.forEach((step, i) => {
+      const on = i === index;
+      step.hidden = !on;
+      step.style.display = on ? '' : 'none';
+    });
+    show(0);
+
+    let password = '';
+
+    takeOver('탈퇴하기', () => {
+      password = $('.field__input')?.value.trim() || '';
+      if (!password) return toast('본인 확인을 위해 비밀번호를 입력해주세요.');
+      show(1);
+    });
+
+    takeOver('취소', () => show(0));
+
+    // 여기서 실제로 계정이 지워진다. 되돌릴 수 없다.
+    takeOver('탈퇴', async () => {
+      try {
+        await PlainAPI.auth.withdraw(password);
+        toast('계정이 삭제되었어요');
+        setTimeout(() => go('login.html'), 800);
+      } catch (error) {
+        show(0);
+        toast(error.message);
+      }
+    });
+  }
+
+  /* ══ 마이페이지 ═══════════════════════════════════════
+     지금까지 이 화면은 아무도 채우지 않아서 HTML의 예시값(등록된 목표 없음 · 68%)이 그대로 남아 있었다. */
+
+  async function mypage() {
+    try { PlainAPI.auth.requireUser(); } catch { return go('login.html'); }
+
+    /* '계정 정보 수정'은 화면도 API도 아직 없다. 지금은 회원가입 화면으로 가버려서
+       메뉴에서 감춰 둔다. 화면과 API가 준비되면 이 세 줄을 지우면 된다. */
+    $$('.list-row').forEach(row => {
+      if (row.querySelector('.list-row__label')?.textContent.trim() === '계정 정보 수정') {
+        row.style.display = 'none';
+      }
+    });
+
+    /* ── 목표 카드 — 계획 전체 기준 진행률 ── */
+    const plan = await PlainAPI.tryOr(() => PlainAPI.plans.current());
+    const gauge = $('.gauge i');
+
+    if (plan && plan.days && plan.days.length) {
+      text($('.goal-card__name'), plan.goal);
+
+      const blocks = plan.days.flatMap(day => day.blocks);
+      const total = blocks.reduce((sum, b) => sum + PlainAPI.spanMinutes(b.start, b.end), 0);
+      const done  = blocks.filter(b => b.done)
+                          .reduce((sum, b) => sum + PlainAPI.spanMinutes(b.start, b.end), 0);
+      const rate = total ? Math.round(done / total * 100) : 0;
+      text($('.goal-card__rate .num'), String(rate));
+      if (gauge) gauge.style.width = rate + '%';
+
+      // 홈 화면과 같은 기준으로 맞춘다. 계획은 일주일씩 만들지만
+      // D-day는 목표를 끝내기까지 걸리는 기간(estimatedWeeks)을 뜻한다.
+      if (plan.estimatedWeeks) text($('.goal-card__dday'), `D-${plan.estimatedWeeks * 7}`);
+    } else {
+      text($('.goal-card__name'), '등록된 목표 없음');
+      text($('.goal-card__rate .num'), '0');
+      text($('.goal-card__dday'), '-');
+      if (gauge) gauge.style.width = '0%';
+    }
+
+    /* ── 이번 주 미리보기 ── */
+    const summary = await PlainAPI.tryOr(() => PlainAPI.stats.summary());
+    const weekCard = $('.spark')?.closest('.card');
+    if (!summary || !weekCard) return;
+
+    text($('.t-h2', weekCard), PlainAPI.minutesToText(summary.weekMinutes));
+    text($('.t-caption.muted3.num', weekCard),
+         `실행률 ${Math.round((summary.averageCompletionRate || 0) * 100)}%`);
+
+    const spark = $$('.spark i', weekCard);
+    const recent = (summary.dailyStats || []).slice(-spark.length);
+    const max = Math.max(1, ...recent.map(day => day.studyMinutes));
+    spark.forEach((bar, index) => {
+      const day = recent[index];
+      bar.style.height = day ? Math.max(4, Math.round(day.studyMinutes / max * 100)) + '%' : '4%';
+      bar.toggleAttribute('data-today', !!day && day.date === localToday());
+    });
+  }
+
+  /* ══ 차단 앱 추천 근거 ═══════════════════════════════
+     근거 화면은 한 장뿐인데 앱 카드는 여러 개다. 어느 앱을 눌렀는지 넘겨주지 않으면
+     항상 HTML에 적힌 예시(인스타그램)가 나온다. 눌린 앱을 저장했다가 다음 화면에서 쓴다. */
+
+  const WHY_APP = 'plain.whyApp';
+
+  /** '인스타그램' + 을 / '리그 오브 레전드' + 를. 마지막 글자의 받침으로 고른다. */
+  function withParticle(word, withBatchim, withoutBatchim) {
+    const last = word.trim().slice(-1).charCodeAt(0);
+    const isHangul = last >= 0xAC00 && last <= 0xD7A3;
+    if (!isHangul) return word + withoutBatchim;
+    return word + ((last - 0xAC00) % 28 ? withBatchim : withoutBatchim);
+  }
+
+  function blockedApps() {
+    // app.js가 화면을 넘기기 직전에 어느 앱이었는지만 적어 둔다. 이동은 app.js가 그대로 한다.
+    before('.appcard__why', event => {
+      const card = event.currentTarget.closest('.appcard');
+      const name = card?.querySelector('.appcard__name')?.textContent.trim();
+      if (!name) return;
+      const category = card.querySelector('.appcard__tag')?.textContent.trim() || '';
+      sessionStorage.setItem(WHY_APP, JSON.stringify({ name, category }));
+    });
+  }
+
+  const ACTION_TEXT = { block: '차단 추천', allow: '허용 추천', review: '직접 확인 권장' };
+
+  async function whyRecommended() {
+    let app = null;
+    try { app = JSON.parse(sessionStorage.getItem(WHY_APP) || 'null'); } catch { /* 무시 */ }
+    if (!app || !app.name) return;   // 목록을 거치지 않고 들어온 경우는 그대로 둔다
+
+    text($('[data-why-app]'), withParticle(app.name, '을', '를') + ' 추천한 이유');
+
+    const plan = PlainAPI.plans.cached();
+    const focusGoal = plan?.goal;
+    const factors = $('[data-why-factors]');
+
+    if (!focusGoal) {
+      text($('[data-why-note]'), '목표를 먼저 정하면 이 앱이 목표에 어떤 영향을 주는지 알려드려요.');
+      if (factors) factors.innerHTML = '';
+      return;
+    }
+
+    text($('[data-why-note]'), `'${focusGoal}' 목표를 기준으로 판단했어요.`);
+
+    const judgement = await PlainAPI.tryOr(() => PlainAPI.ai.judgeApp({
+      appId: app.name,
+      appCategory: app.category,
+      focusGoal
+    }));
+
+    if (!judgement) {
+      text($('[data-why-note]'), 'AI 근거를 불러오지 못했어요. 잠시 후 다시 시도해주세요.');
+      if (factors) factors.innerHTML = '';
+      return;
+    }
+
+    text($('[data-why-note]'), judgement.reason);
+
+    /* 항목은 AI가 만든 문자열이라 껍데기를 먼저 그리고 textContent로 넣는다. */
+    const list = Array.isArray(judgement.factors) ? judgement.factors : [];
+    if (factors) {
+      factors.innerHTML = list.map(() => `
+        <div class="card card--quiet">
+          <span class="t-caption muted"></span>
+          <p class="t-body mt-2"></p>
+        </div>`).join('');
+      $$('.card', factors).forEach((card, index) => {
+        $('.t-caption', card).textContent = list[index].title;
+        $('.t-body', card).textContent = list[index].detail;
+      });
+    }
+
+    const action = ACTION_TEXT[judgement.action] || '검토';
+    const confidence = Math.round((judgement.confidence || 0) * 100);
+    text($('[data-why-confidence]'), `AI 판단: ${action} · 확신도 ${confidence}%`);
+  }
+
   const SCREENS = {
     'goal-time.html':    goalStep,
     'goal-level.html':   goalStep,
     'goal-content.html': goalStep,
     'plan-result.html':  planResult,
     'plan-result-desktop.html': planResult,
+    'plan-why.html':     planWhy,
+    'plan-why-desktop.html': planWhy,
     'home.html':         home,
     'home-desktop.html': home,
     'timer.html':        timer,
     'stats.html':        stats,
     'stats-desktop.html': stats,
     'login.html':        login,
-    'signup.html':       signup
+    'signup.html':       signup,
+    'withdraw.html':     withdraw,
+    'mypage.html':       mypage,
+    'mypage-desktop.html': mypage,
+    'blocked-apps.html': blockedApps,
+    'why-recommended.html': whyRecommended
   };
 
   const run = SCREENS[page];

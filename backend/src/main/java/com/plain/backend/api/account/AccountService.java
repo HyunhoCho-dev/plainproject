@@ -1,5 +1,10 @@
 package com.plain.backend.api.account;
 
+import com.plain.backend.api.focus.FocusRepository;
+import com.plain.backend.api.plan.StudyPlanRepository;
+import com.plain.backend.api.stats.StatsRepository;
+import com.plain.backend.monitoring.NotificationRepository;
+import com.plain.backend.session.FocusSession;
 import com.plain.backend.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * 회원가입과 로그인입니다.
@@ -27,6 +33,10 @@ public class AccountService {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final AccountRepository accountRepository;
+    private final FocusRepository focusRepository;
+    private final StatsRepository statsRepository;
+    private final NotificationRepository notificationRepository;
+    private final StudyPlanRepository studyPlanRepository;
 
     @Transactional
     public AccountDtos.UserResponse signup(AccountDtos.SignupRequest request) {
@@ -61,6 +71,36 @@ public class AccountService {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다");
         }
         return AccountDtos.UserResponse.from(user);
+    }
+
+    /**
+     * 회원탈퇴. 계정과 함께 이 사용자가 남긴 기록을 모두 지웁니다.
+     *
+     * 지우는 순서가 중요합니다. 알림·방해 기록은 세션을 가리키고 세션은 사용자를 가리키므로,
+     * 바깥쪽(알림)부터 지워야 외래 키 제약에 걸리지 않습니다.
+     * 계획 블록은 StudyPlan에 cascade가 걸려 있어 계획을 지우면 함께 사라집니다.
+     */
+    @Transactional
+    public void withdraw(AccountDtos.WithdrawRequest request) {
+        if (request == null || request.userId() == null) {
+            throw new IllegalArgumentException("탈퇴할 계정을 찾지 못했습니다.");
+        }
+        User user = accountRepository.findById(request.userId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
+
+        // 본인 확인. 화면에서 비밀번호를 다시 받습니다.
+        if (!matches(request.password(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 올바르지 않습니다");
+        }
+
+        List<FocusSession> sessions = focusRepository.findByUserIdOrderByStartTimeDesc(user.getId());
+        for (FocusSession session : sessions) {
+            notificationRepository.deleteAll(notificationRepository.findByFocusSessionId(session.getId()));
+        }
+        statsRepository.deleteAll(statsRepository.findByFocusSessionUserId(user.getId()));
+        focusRepository.deleteAll(sessions);
+        studyPlanRepository.deleteAll(studyPlanRepository.findByUserId(user.getId()));
+        accountRepository.delete(user);
     }
 
     /* ── 비밀번호 저장 ──────────────────────────────── */

@@ -21,6 +21,11 @@ window.PlainAPI = (() => {
     return 'http://localhost:8080';
   })();
 
+  /* 오늘 날짜를 YYYY-MM-DD 로. toISOString()은 UTC 기준이라
+     한국 시간 오전 9시 이전에는 어제 날짜가 나온다. 그래서 직접 만든다. */
+  const localToday = (d = new Date()) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
   const KEY = {
     userId:  'plain.userId',
     draft:   'plain.goalDraft',
@@ -103,6 +108,14 @@ window.PlainAPI = (() => {
       return user;
     },
     logout() { store.remove(KEY.userId); store.remove(KEY.plan); store.remove(KEY.session); },
+
+    /* 회원탈퇴. 서버에서 계정과 기록을 지운 뒤 이 브라우저에 남은 것도 비운다. 되돌릴 수 없다. */
+    async withdraw(password) {
+      const id = auth.requireUser();
+      await post('/api/users/withdraw', { userId: id, password });
+      auth.logout();
+      store.remove(KEY.draft);
+    },
     requireUser() {
       const id = userId();
       if (!id) throw new Error('로그인 후 이용해주세요.');
@@ -136,7 +149,7 @@ window.PlainAPI = (() => {
         goal: d.goal,
         currentLevel: d.currentLevel,
         dailyHours: d.dailyHours,
-        startDate: new Date().toISOString().slice(0, 10),
+        startDate: localToday(),
         constraints: d.constraints
       });
       store.set(KEY.plan, plan);
@@ -157,7 +170,7 @@ window.PlainAPI = (() => {
     /* 계획에서 오늘 날짜의 일정만 꺼낸다. 오늘이 없으면 가장 이른 날을 쓴다. */
     today(plan) {
       if (!plan || !plan.days || !plan.days.length) return null;
-      const today = new Date().toISOString().slice(0, 10);
+      const today = localToday();
       return plan.days.find(day => day.date === today) || plan.days[0];
     }
   };
@@ -205,7 +218,9 @@ window.PlainAPI = (() => {
 
   const ai = {
     analyzeDistractions(payload) { return post('/api/ai/distractions/analyze', payload); },
-    judgeNotification(payload)   { return post('/api/ai/notifications/judge', payload); }
+    judgeNotification(payload)   { return post('/api/ai/notifications/judge', payload); },
+    /* 이 앱을 왜 차단 대상으로 추천했는지. 사용 기록 없이 앱 성격과 목표만으로 판단한다 */
+    judgeApp(payload)            { return post('/api/ai/apps/judge', payload); }
   };
 
   /* ══ 화면에서 쓰는 작은 도구 ═════════════════════════ */

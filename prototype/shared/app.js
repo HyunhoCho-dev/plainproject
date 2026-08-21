@@ -189,7 +189,8 @@
       const p = Math.min(elapsed / totalSec, 1);
       if (ring)  ring.setAttribute('stroke-dashoffset', String(C * (1 - p)));
       if (timeEl) timeEl.textContent = fmt(elapsed);
-      if (subEl)  subEl.textContent  = `1시간 30분 중 ${Math.round(p * 100)}%`;
+      if (subEl)  subEl.textContent  =
+        `${Math.floor(totalSec / 60)}분 중 ${Math.round(p * 100)}%`;
     };
     render();
     setInterval(() => { if (running) { elapsed++; render(); } }, 1000);
@@ -224,7 +225,8 @@
       break;
 
     case 'plan-result.html':
-      wireText('근거 보기', 'why-recommended.html');
+      // 계획 근거 화면. why-recommended.html은 차단 앱 추천 근거라서 여기로 오면 안 된다.
+      wireText('근거 보기', 'plan-why.html');
       break;
 
     case 'plan-edit.html':
@@ -240,7 +242,9 @@
     case 'timer.html':
       wireText('종료', 'home.html');
       runTimer({
-        totalSec: 90 * 60, startSec: 24 * 60 + 13,
+        // 0초부터 센다. 총 시간은 live.js가 지금 일정의 길이를 body에 적어둔다.
+        totalSec: Number(document.body.dataset.totalSec) || 90 * 60,
+        startSec: 0,
         timeEl: $('.ring__center .t-display'),
         subEl:  $('.ring__center .t-caption'),
         pauseBtn: byText('일시정지')[0],
@@ -315,8 +319,7 @@
     case 'login.html':
       wireText('로그인', 'home.html');
       $$('.social').forEach(b => b.addEventListener('click', () => go('goal-time.html')));
-      wireText('아이디 찾기', 'signup.html');
-      wireText('비밀번호 재설정', 'signup.html');
+      wireText('회원가입', 'signup.html');
       break;
 
     case 'signup.html': {
@@ -371,7 +374,9 @@
         d.setAttribute('aria-selected', 'true');
       }));
       runTimer({
-        totalSec: 90 * 60, startSec: 24 * 60 + 13,
+        // 0초부터 센다. 총 시간은 live.js가 지금 일정의 길이를 body에 적어둔다.
+        totalSec: Number(document.body.dataset.totalSec) || 90 * 60,
+        startSec: 0,
         timeEl: $('.session__time'), subEl: null,
         pauseBtn: byText('일시정지')[0], ring: null
       });
@@ -401,7 +406,7 @@
     case 'plan-result-desktop.html':
       wireText('계획 확인하러 가기', 'home-desktop.html');
       wireText('조건 바꾸기', 'goal-time.html');
-      wireText('근거 보기', 'why-recommended.html');
+      wireText('근거 보기', 'plan-why-desktop.html');
       break;
   }
 })();

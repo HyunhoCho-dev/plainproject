@@ -11,6 +11,9 @@ public final class AccountDtos {
 
     public record LoginRequest(String username, String password) {}
 
+    /** 회원탈퇴. 본인 확인을 위해 비밀번호를 다시 받습니다. */
+    public record WithdrawRequest(Long userId, String password) {}
+
     public record UserResponse(Long id, String username, String email) {
 
         public static UserResponse from(User user) {

@@ -41,6 +41,19 @@ export function validatePattern(result) {
   return result;
 }
 
+export function validateAppBlock(result) {
+  // 사용 기록이 없어도 판단과 근거는 항상 있어야 화면에 띄울 수 있습니다.
+  assert(["block", "allow", "review"].includes(result.action), "action 값이 잘못되었습니다.");
+  assert(typeof result.reason === "string", "reason이 필요합니다.");
+  assert(typeof result.confidence === "number", "confidence가 필요합니다.");
+  assert(Array.isArray(result.factors) && result.factors.length > 0, "factors 배열이 필요합니다.");
+  for (const factor of result.factors) {
+    assert(typeof factor.title === "string", "각 근거의 title이 필요합니다.");
+    assert(typeof factor.detail === "string", "각 근거의 detail이 필요합니다.");
+  }
+  return result;
+}
+
 export function validateNotification(result) {
   // 알림 판단 결과도 세 가지 안전한 상태만 허용합니다.
   assert(["allow", "block", "review"].includes(result.action), "action 값이 잘못되었습니다.");

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>이렇게 계획한 이유 — 집중 지원 앱</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/components.css">
+  <link rel="stylesheet" href="../shared/desktop.css">
+  <style>
+    /* 계획 결과 화면과 같은 중앙 정렬 — 근거에만 집중시킨다 */
+    .onboard {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-12) var(--space-6);
+    }
+    .onboard__inner { width: 100%; max-width: 640px; }
+  </style>
+</head>
+<body data-page="plan-why-desktop.html">
+
+<div class="onboard">
+  <div class="onboard__inner">
+
+    <span class="badge badge--ai t-micro">AI 판단 근거</span>
+    <h1 class="t-h1 mt-4 mb-3">이렇게 계획한 이유</h1>
+    <p class="t-body muted" data-why-goal></p>
+
+    <p class="t-body mt-6" data-why-summary>계획 근거를 불러오는 중이에요.</p>
+
+    <h2 class="t-caption muted mt-8 mb-3">참고 · 코치의 조언</h2>
+    <div class="stack" style="gap:var(--space-3)" data-why-advice></div>
+
+    <h2 class="t-caption muted mt-8 mb-3">
+      참고 · 일정별 이유 <span class="num" data-why-date></span>
+    </h2>
+    <div class="stack" style="gap:var(--space-3)" data-why-purposes></div>
+
+    <button class="btn btn--primary btn--block mt-8">확인했어요</button>
+
+  </div>
+</div>
+
+  <script src="../shared/api.js" defer></script>
+  <script src="../shared/live.js" defer></script>
+  <script src="../shared/app.js" defer></script>
+</body>
+</html>

@@ -24,4 +24,12 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.ok(accountService.login(request)));
     }
 
+    /** 회원탈퇴. 계정과 계획·세션·기록을 모두 지웁니다. 되돌릴 수 없습니다. */
+    @PostMapping("/withdraw")
+    public ResponseEntity<ApiResponse<Void>> withdraw(
+            @RequestBody AccountDtos.WithdrawRequest request) {
+        accountService.withdraw(request);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
+
 }

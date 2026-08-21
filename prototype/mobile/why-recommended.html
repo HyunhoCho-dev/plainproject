@@ -57,26 +57,22 @@
       <div class="bottom-sheet__handle"></div>
 
       <span class="badge badge--ai t-micro">AI 판단 근거</span>
-      <h2 class="t-h2 mt-4 mb-3">인스타그램을 추천한 이유</h2>
-      <p class="t-body muted mb-6">최근 2주간 집중 세션 기록을 분석했어요.</p>
+      <h2 class="t-h2 mt-4 mb-3" data-why-app>인스타그램을 추천한 이유</h2>
+      <p class="t-body muted mb-6" data-why-note>최근 2주간 집중 세션 기록을 분석했어요.</p>
 
-      <div class="stack" style="gap:var(--space-3)">
+      <!--
+        근거 항목은 AI가 앱 종류와 현재 목표를 보고 만든다. 앱마다 다르다.
+        사용 빈도 같은 수치는 넣지 않는다 — 앱 사용 기록을 수집하는 기능이 아직 없어
+        측정하지 않은 숫자를 적으면 거짓이 된다.
+      -->
+      <div class="stack" style="gap:var(--space-3)" data-why-factors>
         <div class="card card--quiet">
-          <span class="t-caption muted">집중 세션 중 사용 빈도</span>
-          <p class="t-h2 mt-2 num">평균 8회</p>
-          <p class="t-caption muted3 mt-2">세션 1회당 기준</p>
-        </div>
-        <div class="card card--quiet">
-          <span class="t-caption muted">세션 이탈 직전 진입</span>
-          <p class="t-h2 mt-2 num">43%</p>
-          <p class="t-caption muted3 mt-2">중단된 세션 중 이 앱을 연 직후 발생한 비율</p>
-        </div>
-        <div class="card card--quiet">
-          <span class="t-caption muted">현재 목표와의 연관성</span>
-          <p class="t-h2 mt-2">낮음</p>
-          <p class="t-caption muted3 mt-2">사용자의 현재 목표와 관련 없는 도메인</p>
+          <span class="t-caption muted">판단 근거</span>
+          <p class="t-body mt-2">AI 근거를 불러오는 중이에요.</p>
         </div>
       </div>
+
+      <p class="t-caption muted3 mt-4" data-why-confidence></p>
 
       <div class="mt-6" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2)">
         <button class="btn btn--quiet">추천 해제</button>

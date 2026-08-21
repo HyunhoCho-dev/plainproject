@@ -19,6 +19,7 @@ export function createAiRouter(aiService) {
   router.post("/plans/generate", asyncRoute((body) => aiService.createPlan(body)));
   router.post("/distractions/analyze", asyncRoute((body) => aiService.analyzeDistractions(body)));
   router.post("/patterns/analyze", asyncRoute((body) => aiService.analyzePattern(body)));
+  router.post("/apps/judge", asyncRoute((body) => aiService.judgeAppBlock(body)));
   router.post("/notifications/judge", asyncRoute((body) => aiService.judgeNotification(body)));
   return router;
 }

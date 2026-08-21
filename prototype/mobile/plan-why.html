@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>이렇게 계획한 이유 (바텀시트) — 집중 지원 앱</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/components.css">
+</head>
+<body data-page="plan-why.html">
+
+<div class="stage">
+  <div class="phone">
+
+    <!-- 뒤에 깔린 계획 결과 화면 -->
+    <div class="screen">
+      <header class="appbar">
+        <button class="icon-btn" aria-label="뒤로">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M12 5l-6 5 6 5" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="t-h3 appbar__title">계획 근거</h1>
+        <span style="width:36px"></span>
+      </header>
+
+      <section class="pad">
+        <span class="badge badge--ai t-micro">AI 분석 완료</span>
+        <h2 class="t-h1 mt-4 mb-3">계획이 준비됐어요</h2>
+        <p class="t-body muted" data-why-goal></p>
+      </section>
+    </div>
+
+    <div class="dim"></div>
+
+    <!--
+      AI가 만든 것에는 항상 근거 보기 진입점이 붙는다 (DESIGN.md §7 원칙 1).
+      여기 들어가는 값은 계획을 받을 때 함께 온 summary·advice·purpose다.
+      새로 서버를 부르지 않는다.
+    -->
+    <div class="bottom-sheet" role="dialog" aria-label="계획 근거">
+      <div class="bottom-sheet__handle"></div>
+
+      <span class="badge badge--ai t-micro">AI 판단 근거</span>
+      <h2 class="t-h2 mt-4 mb-3">이렇게 계획한 이유</h2>
+      <p class="t-body muted mb-6" data-why-summary>계획 근거를 불러오는 중이에요.</p>
+
+      <h3 class="t-caption muted mb-3">참고 · 코치의 조언</h3>
+      <div class="stack" style="gap:var(--space-3)" data-why-advice></div>
+
+      <h3 class="t-caption muted mt-6 mb-3">
+        참고 · 일정별 이유 <span class="num" data-why-date></span>
+      </h3>
+      <div class="stack" style="gap:var(--space-3)" data-why-purposes></div>
+
+      <button class="btn btn--primary btn--block mt-6">확인했어요</button>
+    </div>
+
+  </div><!-- /phone -->
+</div>
+
+  <script src="../shared/api.js" defer></script>
+  <script src="../shared/live.js" defer></script>
+  <script src="../shared/app.js" defer></script>
+</body>
+</html>
