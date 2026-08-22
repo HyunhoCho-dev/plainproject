@@ -48,7 +48,8 @@ body {
 .brand__mark {
   width: 24px; height: 24px;
   border-radius: var(--r-sm);
-  background: var(--accent);
+  /* 로고는 이미지 하나로 관리한다. 색을 바꾸려면 logo.png만 교체하면 된다. */
+  background: url("logo.png") center / cover no-repeat;
   flex-shrink: 0;
 }
 
