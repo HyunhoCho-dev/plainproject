@@ -13,6 +13,9 @@
 
 (() => {
 
+  // 심사용 프로토타입에서는 네트워크 응답으로 정적 시연 화면을 덮어쓰지 않는다.
+  if (window.PLAIN_DEMO_MODE) return;
+
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const text = (el, value) => { if (el && value != null && value !== '') el.textContent = value; };

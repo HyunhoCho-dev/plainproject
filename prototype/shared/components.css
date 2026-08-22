@@ -896,3 +896,63 @@ button { font-family: inherit; }
   min-height: 44px;              /* 터치 타겟 */
 }
 .tabbar__item[aria-current="page"] { color: var(--accent); }
+
+/* ══ 심사위원용 프로토타입 내비게이션 ═══════════════ */
+body[data-demo="true"] { padding-bottom: 76px; }
+body[data-demo="true"] .phone { margin-bottom: 76px; }
+
+.demo-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: min(680px, calc(100% - 24px));
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) 112px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: var(--r-full);
+  background: rgba(29,29,31,.92);
+  color: #fff;
+  backdrop-filter: saturate(180%) blur(18px);
+}
+.demo-nav__button {
+  height: 40px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: #0066cc;
+  color: #fff;
+  font: 600 14px/1 var(--font-sans);
+  cursor: pointer;
+}
+.demo-nav__button:disabled { opacity: .35; cursor: default; }
+.demo-nav__status { min-width: 0; text-align: center; }
+.demo-nav__status b,
+.demo-nav__status span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-nav__status b { font-size: 13px; }
+.demo-nav__status span { margin-top: 3px; color: #a1a1a6; font-size: 11px; }
+
+.demo-ribbon {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 999;
+  padding: 7px 11px;
+  border-radius: var(--r-full);
+  background: rgba(0,102,204,.92);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+}
+
+@media (max-width: 640px) {
+  body[data-demo="true"] { padding-bottom: 68px; }
+  body[data-demo="true"] .phone { height: calc(100dvh - 68px); margin-bottom: 68px; }
+  .demo-nav { bottom: 6px; grid-template-columns: 88px minmax(0, 1fr) 88px; }
+  .demo-ribbon { top: 8px; right: 8px; }
+}

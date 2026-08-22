@@ -409,4 +409,148 @@
       wireText('근거 보기', 'plan-why-desktop.html');
       break;
   }
+
+  /* ══ 심사 제출용 데모 모드 ═════════════════════════
+     실제 API를 호출하지 않고 각 화면이 설명 가능한 상태로 보이게 한다.
+     하단 버튼은 심사위원이 정해진 순서대로 모든 화면을 넘겨보는 용도다. */
+  if (window.PLAIN_DEMO_MODE) {
+    document.body.dataset.demo = 'true';
+
+    const DEMO_FLOW = [
+      ['mobile', 'login.html', '로그인'],
+      ['mobile', 'signup.html', '회원가입'],
+      ['mobile', 'goal-time.html', '목표 시간 입력'],
+      ['mobile', 'goal-level.html', '현재 수준 입력'],
+      ['mobile', 'goal-content.html', '목표 내용 입력'],
+      ['mobile', 'plan-loading.html', 'AI 계획 생성 중'],
+      ['mobile', 'plan-result.html', 'AI 계획 생성 결과'],
+      ['mobile', 'plan-why.html', 'AI 계획 추천 근거'],
+      ['mobile', 'notify-permission.html', '알림 권한 안내'],
+      ['mobile', 'home.html', '오늘의 계획'],
+      ['mobile', 'home-empty.html', '계획 빈 상태'],
+      ['mobile', 'plan-edit.html', '계획 편집'],
+      ['mobile', 'plan-regenerate.html', '계획 재생성'],
+      ['mobile', 'timer.html', '집중 타이머'],
+      ['mobile', 'blocked.html', '방해요소 차단'],
+      ['mobile', 'blocked-apps.html', '차단 앱 관리'],
+      ['mobile', 'why-recommended.html', 'AI 차단 추천 근거'],
+      ['mobile', 'notify-settings.html', '알림 설정'],
+      ['mobile', 'stats.html', '학습 통계와 AI 인사이트'],
+      ['mobile', 'stats-empty.html', '통계 빈 상태'],
+      ['mobile', 'mypage.html', '마이페이지'],
+      ['mobile', 'withdraw.html', '회원탈퇴'],
+      ['desktop', 'home-desktop.html', 'PC 오늘의 계획'],
+      ['desktop', 'plan-result-desktop.html', 'PC AI 계획 결과'],
+      ['desktop', 'plan-why-desktop.html', 'PC AI 추천 근거'],
+      ['desktop', 'stats-desktop.html', 'PC 통계'],
+      ['desktop', 'mypage-desktop.html', 'PC 마이페이지']
+    ];
+
+    const demoText = (selector, value, index = 0) => {
+      const element = $$(selector)[index];
+      if (element) element.textContent = value;
+    };
+    const demoValue = (selector, value, index = 0) => {
+      const element = $$(selector)[index];
+      if (element) element.value = value;
+    };
+
+    // 모든 화면에서 동일하게 쓰는 대표 사용자 데이터.
+    $$('.userchip__name').forEach(element => { element.textContent = '김민준'; });
+
+    if (page === 'login.html') {
+      demoValue('.field__input', 'plain_demo', 0);
+      demoValue('.field__input', 'plain2026!', 1);
+    }
+
+    if (page === 'signup.html') {
+      demoValue('input[autocomplete="username"]', 'plain_demo');
+      demoValue('input[autocomplete="new-password"]', 'plain2026!');
+      demoValue('input[autocomplete="nickname"]', '민준');
+    }
+
+    if (page === 'goal-time.html') {
+      demoText('.stepper__value .t-display', '2.5');
+      const selected = byText('2.5시간')[0];
+      selected?.setAttribute('aria-selected', 'true');
+    }
+
+    if (page === 'goal-level.html') {
+      const selected = $$('.chip-card').find(card => card.querySelector('b')?.textContent === '중급');
+      selected?.setAttribute('aria-selected', 'true');
+    }
+
+    if (page === 'goal-content.html') {
+      demoValue('.field__area', '2026년 9월 정보처리기사 실기 합격을 목표로 핵심 이론과 기출문제를 공부하고 싶어요.');
+    }
+
+    if (page === 'plan-result.html' || page === 'plan-result-desktop.html') {
+      demoText('.badge--ai', 'AI 분석 완료');
+      demoText('h1', '맞춤 학습 계획이 완성됐어요');
+      demoText('.t-body.muted', '입력한 목표와 학습 가능 시간을 바탕으로 만든 계획입니다.');
+      demoText('.card .t-h2', '6주', 0);
+      demoText('.card .muted3', '시험일까지 복습 주간 1주를 포함했어요.', 0);
+      demoText('.card .t-h2', '주 15시간', 1);
+      demoText('.card .muted3', '평일 2시간 30분, 주말 보충 학습 기준입니다.', 1);
+      demoText('.card .t-h2', '데이터베이스 · 실무 알고리즘', 2);
+      demoText('.card .muted3', '최근 기출 비중과 현재 수준을 함께 반영했어요.', 2);
+      demoText('.ai-card__body', '처음 2주는 취약 개념을 짧게 학습한 뒤 바로 기출문제로 확인하세요. 오전 집중도가 높아 어려운 과목을 오전에 배치했습니다.');
+    }
+
+    if (page === 'home.html' || page === 'home-desktop.html' || page === 'mypage.html' || page === 'mypage-desktop.html') {
+      demoText('.goal-card__name', '정보처리기사 실기 합격');
+      demoText('.goal-card__dday', 'D-42');
+      demoText('.goal-card__rate strong', '68');
+      const gauge = $('.goal-card .gauge > i');
+      if (gauge) gauge.style.width = '68%';
+      demoText('.goal-card .t-caption[style*="margin-left"]', '102분 / 150분');
+    }
+
+    if (page === 'home.html') demoText('.minibar__time', '24:13');
+
+    if (page === 'stats.html' || page === 'stats-desktop.html') {
+      demoText('.stat-tile__value', '9시간 40분', 0);
+      demoText('.stat-tile__value', '82%', 1);
+      demoText('.stat-tile__value', '37회', 2);
+      demoText('.stat-tile__value', '41분', 3);
+      demoText('.ai-card__body', '오전 10시부터 12시까지 집중 유지 시간이 평균보다 24% 길었어요. 다음 주에는 데이터베이스와 알고리즘 학습을 이 시간대에 우선 배치해보세요.');
+    }
+
+    if (page === 'mypage.html' || page === 'mypage-desktop.html') {
+      const headings = $$('.t-h2');
+      if (headings[0]) headings[0].textContent = '김민준';
+      demoText('.num[style*="--warn"]', '🔥 12');
+      demoText('.card .t-h2', '9시간 40분');
+    }
+
+    if (page === 'why-recommended.html') {
+      demoText('[data-why-note]', '최근 2주간 집중 세션 18회와 방해 알림 37건을 분석했어요.');
+      demoText('.card .t-body', '집중 세션 중 인스타그램을 연 직후 평균 복귀 시간이 8분 12초로 가장 길었습니다. 시험까지 42일 남아 우선 차단을 추천합니다.');
+    }
+
+    const ribbon = document.createElement('div');
+    ribbon.className = 'demo-ribbon';
+    ribbon.textContent = '심사용 프로토타입 · 데모 데이터';
+    document.body.appendChild(ribbon);
+
+    const currentIndex = Math.max(0, DEMO_FLOW.findIndex(([, file]) => file === page));
+    const current = DEMO_FLOW[currentIndex];
+    const navigate = index => {
+      const [folder, file] = DEMO_FLOW[index];
+      location.href = `../${folder}/${file}`;
+    };
+    const nav = document.createElement('nav');
+    nav.className = 'demo-nav';
+    nav.setAttribute('aria-label', '프로토타입 화면 이동');
+    nav.innerHTML = `
+      <button class="demo-nav__button" data-demo-prev ${currentIndex === 0 ? 'disabled' : ''}>← 이전</button>
+      <div class="demo-nav__status">
+        <b>${current[2]}</b>
+        <span>${currentIndex + 1} / ${DEMO_FLOW.length}</span>
+      </div>
+      <button class="demo-nav__button" data-demo-next ${currentIndex === DEMO_FLOW.length - 1 ? 'disabled' : ''}>다음 →</button>`;
+    nav.querySelector('[data-demo-prev]')?.addEventListener('click', () => navigate(currentIndex - 1));
+    nav.querySelector('[data-demo-next]')?.addEventListener('click', () => navigate(currentIndex + 1));
+    document.body.appendChild(nav);
+  }
 })();
